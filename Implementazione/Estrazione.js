@@ -7,14 +7,34 @@ var objectValue = JSON.parse(string);
 var indirizzo_contratto = objectValue['networks']['10']['address'];
 var abi = objectValue['abi'];
 var bytecode = objectValue['bytecode'];
+//const Web3 = require('web3');
+
 
 
 class Estrazione {
 
-    constructor() {
+    constructor() {}
 
+
+
+        
+        
+    async ottieniaccounts () {
+        var web3;
+        var accounts=[];
+        for (let i = 0; i < 3; i++) {
+            web3 = new Web3('http://localhost:2200' + i);
+            await web3.eth.getAccounts().then((value) => {
+              accounts.push(value[0]);
+            }).catch((error) => {
+              console.log("Si è verificato un errore!" + error)
+            })
+          }
+        return accounts  
     }
-
+    
+    
+        
     getInfoByLotto(
         account,
         id_lotto

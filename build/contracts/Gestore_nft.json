@@ -45426,14 +45426,14 @@
         }
       },
       "links": {
-        "Generica": "0xE62a84Ad37F45AD4cb238192bB996DDc1aFCb69a"
+        "Generica": "0xcB2299eA32fC5Db76B638BEe5bC081BAab2F21d0"
       },
-      "address": "0xd0a5685a4ba479D0FF4E86Ca8300738573816c63",
-      "transactionHash": "0xd0c1108cbbdf4c4b7492e1cb1119a9fa0a8b95b816c8c3ed449aac85f3208d9d"
+      "address": "0xAC9061dDF61500407AC8c1d6D1f14271d2C94B0a",
+      "transactionHash": "0xe6851ad8d0e7157cbe7437ad13d6415b966b56840b63aa9b6c9eb3105b9f9568"
     }
   },
   "schemaVersion": "3.4.1",
-  "updatedAt": "2022-02-18T15:38:53.731Z",
+  "updatedAt": "2022-02-18T16:37:26.631Z",
   "networkType": "quorum",
   "devdoc": {
     "kind": "dev",
