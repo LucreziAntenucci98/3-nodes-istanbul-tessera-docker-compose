@@ -1,5 +1,5 @@
 var path1 = "C:/Windows/System32/network/3-nodes-istanbul-tessera-docker-compose/build/contracts/";
-var path2 = "C:/Windows/System32/network/node_modules/web3";
+var path2 = "C:/Windows/System32/node_modules/web3";
 
 // estraggo l'indirizzo, l'ABI ed il bytecode dello smart contract da chiamare
 const file_contratto = require (path1+"Gestore_nft.json");
@@ -28,19 +28,32 @@ web3.eth.getAccounts().then((valore) => {
  
 function estrai(acc) {
  
-    var id_token = 1; //il token corrisponde all'id della prima materia prima inserita
+    var id_token = 6; //il token corrisponde all'id della prima materia prima inserita
     
  
     var simpleContract = new web3.eth.Contract(abi,indirizzo_contratto, {from:acc})
 
-    var owner = simpleContract.methods.getInfoByToken(id_token).call({from:acc})
+    simpleContract.methods.getInfoByToken(id_token).call({from:acc})
     .catch((errore) => {
     console.log("erroreeeeee: " + errore.message);}
-    )
-    .then((receipt) => {
-        console.log("ricevuta finale: ");
-        console.log(receipt);
+    ).then((risorsa) => {
+        if(risorsa!=undefined) {
+        const {0: nome, 1: CO2, 2: lotto, 3:tipologia, 4:lista_materie_prime, 5:token} = risorsa;
+        console.log("nome -> " + nome); 
+        console.log("CO2 -> " + CO2); 
+        console.log("lotto -> " + lotto); 
+        console.log("tipologia -> " + tipologia); 
+        if(lista_materie_prime == "") {
+            console.log("lotti materie prime utilizzate -> nessuna materia prima utilizzata");
+        } 
+        else {
+        console.log("lotti materie prime utilizzate -> " + lista_materie_prime); 
+        }        console.log("token -> " + token); 
+        }
     });
+    
+
+
 
     
     

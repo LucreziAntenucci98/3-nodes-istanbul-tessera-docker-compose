@@ -10,8 +10,8 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract Gestore_nft is Ownable {
 
-    uint8 constant ATTIVITA_MASSIME = 2;
-    uint8 constant MATERIE_MASSIME = 2;
+
+
 
 
 
@@ -24,6 +24,9 @@ contract Gestore_nft is Ownable {
 
 
     CarbonFootprint carbonFootprint = new CarbonFootprint();
+
+
+    
 
 
     //funzione con cui il creatore dello smartContract può aggiungere un nuovo produttore, trasformatore o cliente
@@ -68,15 +71,15 @@ contract Gestore_nft is Ownable {
     //crea una materia prima
     function creaMateriaPrima(
         uint256 _id_lotto, uint32 _valore_CO2, string memory _nome
-    ) external returns(uint256) {
+    ) external {
+
 
         require(!nonEsistente("produttore", msg.sender), "Solo i produttori possono aggiungere materie prime");
         require(_id_lotto != 0, "Id lotto non valido");
         require(_valore_CO2>0 && _valore_CO2<100, "Valore di CO2 non valido");
         require(carbonFootprint.getRisorsaByLotto(_id_lotto).exists==false, "Id lotto gi\xC3\xa0 presente");
-        uint256[MATERIE_MASSIME] memory vettore_risorse;
-        uint256 _id_nuovo_prodotto = carbonFootprint.creaProdotto(_id_lotto, _valore_CO2, "materia prima", msg.sender, vettore_risorse, _nome);
-        return _id_nuovo_prodotto;
+        uint256[] memory vettore_risorse;
+        carbonFootprint.creaProdotto(_id_lotto, _valore_CO2, "materia prima", msg.sender, vettore_risorse, _nome);
 
     }
 
@@ -84,35 +87,34 @@ contract Gestore_nft is Ownable {
     // consente di trasferire una materia prima o prodotto ad un altro attore
     function trasferimentoMateriaPrima(
         address _destinatario, uint256 _tokenId, address _contract
-        ) external returns(string memory){  
+        ) external {  
              
         require(!nonEsistente(_destinatario), "L'indirizzo deve appartenere ad un produttore, trasformatre o cliente");
         carbonFootprint.approve(_contract, _tokenId);
         carbonFootprint.safeTransferFrom(msg.sender, _destinatario, _tokenId);
-        return "trasferimento avvenuto con successo";
-
     }
 
 
     // crea un nuovo prodotto a partire da una serie di attività ed una serie di lotti di materie prime
     function creaProdotto(
-        string[ATTIVITA_MASSIME] memory _nome_attivita,uint32[MATERIE_MASSIME] memory _CO2_attivita, string memory _nome, uint256[MATERIE_MASSIME] memory _id_materie_prime, uint256 _id_lotto
-    ) external returns(uint256) {
+        string[] memory _nome_attivita, uint32[] memory _CO2_attivita, string memory _nome, uint256[] memory _lotti_materie_prime, uint256 _id_lotto
+    ) external {
 
-        require(carbonFootprint.getRisorsaByLotto(_id_lotto).exists==false, "Id lotto gi\xC3\xa0 presente");
+        require(carbonFootprint.getRisorsaByLotto(_id_lotto).exists==false, "Il lotto inserito \xc3\xa8 gi\xC3\xa0 presente");
         require(!nonEsistente("trasformatore", msg.sender), "Solo i trasformatori possono aggiungere un prodotto trasformato");
         uint32 CO2_totale = 0; 
 
         // per ogni materia prima controllo se è valida ed utilizzabile, poi sommo i corrispondenti contributi in CO2
-        for (uint i=0;i<_id_materie_prime.length;i++) {
+        for (uint i=0;i<_lotti_materie_prime.length;i++) {
 
-            CarbonFootprint.Risorsa memory risorsa = carbonFootprint.getRisorsaByIdProdotto(_id_materie_prime[i]);
-            carbonFootprint.setTipologiaUtilizzato(_id_materie_prime[i]);
+            CarbonFootprint.Risorsa memory risorsa = carbonFootprint.getRisorsaByLotto(_lotti_materie_prime[i]);
 
 
-            require(_id_materie_prime[i] != 0, "Id lotto non valido");
-            require(getOwnerByToken(_id_materie_prime[i])==msg.sender, "Non sei in possesso della materia prima inserita");
-            require(Generica.stringCompare(string(risorsa.tipologia),"materia prima"),"L'elemento selezionato non \xc3\xa8 una materia prima");
+            require(_lotti_materie_prime[i] != 0, "Il lotto 0 non \xc3\xa8 valido");
+            require(getOwnerByToken(risorsa.token)==msg.sender, "Non sei in possesso della materia prima con lotto");
+            require(Generica.stringCompare(string(risorsa.tipologia),"materia prima"),"L'elemento con id pari a non \xc3\xa8 una materia prima");
+
+            carbonFootprint.setTipologiaUtilizzato(_lotti_materie_prime[i]);
 
             CO2_totale+=risorsa.valore_CO2;
 
@@ -127,8 +129,7 @@ contract Gestore_nft is Ownable {
             
         // creo il prodotto passando id del lotto, CO2 totale, tipologia (prodotto trasformato), possessore (chi ha 
         // mandato il messaggio), lotti di materie prime utilizzate e nome
-        uint256 _id_nuovo_prodotto = carbonFootprint.creaProdotto(_id_lotto, CO2_totale, "prodotto trasformato", msg.sender, _id_materie_prime, _nome);
-        return _id_nuovo_prodotto;
+        carbonFootprint.creaProdotto(_id_lotto, CO2_totale, "prodotto trasformato", msg.sender, _lotti_materie_prime, _nome);
 
     }
     
@@ -153,11 +154,12 @@ contract Gestore_nft is Ownable {
 
     function getInfoByToken(
         uint256 _token
-    ) public view returns(string memory, uint256, uint256, string memory) {
+    ) public view returns(string memory, uint32, uint256, string memory, 
+        uint256[] memory, uint256) {
 
         CarbonFootprint.Risorsa memory risorsa = carbonFootprint.getRisorsaByIdProdotto(_token);
         require(_token!=0 && _token<=carbonFootprint.currentToken(), "Il token inserito non \xc3\xa8 valido");
-        return (risorsa.nome, risorsa.lotto, risorsa.valore_CO2, risorsa.tipologia);
+        return (risorsa.nome, risorsa.lotto, risorsa.valore_CO2, risorsa.tipologia, risorsa.id_materie_prime, risorsa.token);
 
     }
 
@@ -165,11 +167,12 @@ contract Gestore_nft is Ownable {
 
     function getInfoByLotto(
         uint256 _lotto
-    ) public view returns(string memory, uint256, uint256, string memory) {
+    ) public view returns(string memory, uint32, uint256, string memory, 
+        uint256[] memory, uint256) {
 
         CarbonFootprint.Risorsa memory risorsa = carbonFootprint.getRisorsaByLotto(_lotto);
         require(_lotto!=0 && risorsa.exists!=false, "Il lotto inserito non \xc3\xa8 valido");
-        return (risorsa.nome, risorsa.lotto, risorsa.valore_CO2, risorsa.tipologia);
+        return (risorsa.nome, risorsa.lotto, risorsa.valore_CO2, risorsa.tipologia, risorsa.id_materie_prime, risorsa.token);
                 
     }
 
@@ -179,8 +182,8 @@ contract Gestore_nft is Ownable {
     ) public view returns(CarbonFootprint.Risorsa[] memory) {
             
         CarbonFootprint.Risorsa[] memory risorse = new CarbonFootprint.Risorsa[](carbonFootprint.currentToken());
-        uint j=0;
-        for (uint i=1;i<=carbonFootprint.currentToken();i++) {
+        uint256 j=0;
+        for (uint256 i=1;i<=carbonFootprint.currentToken();i++) {
             CarbonFootprint.Risorsa memory risorsa_i = carbonFootprint.getRisorsaByIdProdotto(i);
             if(Generica.stringCompare(risorsa_i.nome,_nome)) {
                 risorse[j] = risorsa_i;

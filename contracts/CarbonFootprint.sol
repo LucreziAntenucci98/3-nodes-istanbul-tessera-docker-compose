@@ -9,8 +9,6 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 contract CarbonFootprint is ERC721 {
 
 
-    //numero massimo di attività per prodotto
-    uint8 constant MATERIE_MASSIME = 2;
 
     // per tenere il conteggio dei token prodotti fino ad ora
     using Counters for Counters.Counter;
@@ -22,7 +20,7 @@ contract CarbonFootprint is ERC721 {
         uint256 lotto;
         uint32 valore_CO2; 
         string tipologia;
-        uint256[MATERIE_MASSIME] id_materie_prime;
+        uint256[] id_materie_prime;
         uint256 token;
         bool exists;
     }
@@ -39,7 +37,7 @@ contract CarbonFootprint is ERC721 {
     //tale funzione crea il certificato per un prodotto (sia materia prima che trasformato)
     function creaProdotto(
         uint256 _lotto, uint32 _valore_CO2, string memory _tipologia, 
-        address _possessore, uint256[MATERIE_MASSIME] memory _id_materia_prima, string memory _nome
+        address _possessore, uint256[] memory _id_materia_prima, string memory _nome
         )
         public returns(uint256){
 

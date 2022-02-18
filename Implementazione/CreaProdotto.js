@@ -1,6 +1,6 @@
 // estraggo l'indirizzo, l'ABI ed il bytecode dello smart contract da chiamare
 var path1 = "C:/Windows/System32/network/3-nodes-istanbul-tessera-docker-compose/build/contracts/";
-var path2 = "C:/Windows/System32/network/node_modules/web3";
+var path2 = "C:/Windows/System32/node_modules/web3";
 
 const file_contratto = require (path1+"Gestore_nft.json");
 const string = JSON.stringify(file_contratto); //trasformo il contratto in stringa
@@ -29,9 +29,9 @@ web3.eth.getAccounts().then((valore) => {
 function aggiungi(acc) {
     var nomeattivita = ["trasporto","produzione"]
     var attivita = [80,90];
-    var nome="latte";
-    var materiaprima = [1,2];
-    var id_lotto = 50;
+    var nome="colazione";
+    var materiaprima = [30,300];
+    var id_lotto = 10;
     
  
     var simpleContract = new web3.eth.Contract(abi,indirizzo_contratto, {from:acc})

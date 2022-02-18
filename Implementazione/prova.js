@@ -10,7 +10,7 @@ const inquirer = require(path+"inquirer");
 clear(); //pulisce la schermata 
 console.log(
     chalk.green( //chalk è una cosa che mi fa scrivere un titolo in verde 
-        figlet.textSync('Eco-Chain', { horizontalLayout: 'full' })
+        figlet.textSync('Green-Chain', { horizontalLayout: 'full' })
     )
    
 );

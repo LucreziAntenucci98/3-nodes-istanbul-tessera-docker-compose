@@ -1,16 +1,3 @@
-/*var cf= artifacts.require("CarbonFootprint");
-var gen = artifacts.require("Generica");
-var nft = artifacts.require("Gestore_nft");
-
-
-module.exports = async function (deployer) {
-    deployer.deploy(cf);
-    deployer.link(cf,nft);
-    deployer.deploy(gen);
-    deployer.link(gen,nft);
-    deployer.deploy(nft);
-}*/
-
 const Web3 = require('web3');
 var web3;
 var accounts=[];
