@@ -6,7 +6,7 @@ const boxen = require(path+"boxen");
 const clear = require(path+"clear");
 const figlet = require(path+"figlet");
 const inquirer = require(path+"inquirer");
-
+const form = require("./form")
 
         var estrazione = new Estrazione();
         var transazioni = new Transazioni();
@@ -59,7 +59,7 @@ var account = () => {
     }
     return inquirer.prompt(lista_operazioni);
 };
-account().then(()=>{operazione()});
+account().then(()=>{form.tokenform});
 })
 
 
