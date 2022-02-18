@@ -154,7 +154,7 @@ contract Gestore_nft is Ownable {
 
     function getInfoByToken(
         uint256 _token
-    ) public view returns(string memory, uint32, uint256, string memory, 
+    ) public view returns(string memory, uint256, uint32, string memory, 
         uint256[] memory, uint256) {
 
         CarbonFootprint.Risorsa memory risorsa = carbonFootprint.getRisorsaByIdProdotto(_token);
@@ -167,7 +167,7 @@ contract Gestore_nft is Ownable {
 
     function getInfoByLotto(
         uint256 _lotto
-    ) public view returns(string memory, uint32, uint256, string memory, 
+    ) public view returns(string memory, uint256, uint32, string memory, 
         uint256[] memory, uint256) {
 
         CarbonFootprint.Risorsa memory risorsa = carbonFootprint.getRisorsaByLotto(_lotto);
