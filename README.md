@@ -27,8 +27,7 @@ npm install {nome_libreria}
 
 ## Installazione
 
-Avviare Docker-desktop
-Scaricare la cartella di progetto nella propria macchina, aprire il prompt di comando ed eseguire:
+Avviare Docker-desktop e posizionarsi nella cartella di progetto precedentemente scaricata, aprire il prompt di comando ed eseguire:
 
 ```bash
 truffle deploy
@@ -44,7 +43,7 @@ node interfaccia.js
 ## Utilizzo
 
 La schermata iniziale del programma fornisce un'interfaccia in cui è possibile scegliere tra 3 account utenti, il primo dei quali ha privilegi di amministratore, cioè
-può assegnare ruoli a se stesso e agli altri account.
+può assegnare ruoli a se stesso e agli altri account attraverso l'operazione "Inserimento Attore".
 I ruoli disponibili sono 3: produttore, consumatore e cliente.
 Inizialmente gli account non hanno un ruolo, ma l'amministratore può decidere di assegnare anche più ruoli allo stesso account.
 
@@ -64,6 +63,13 @@ Dopo aver selezionato l'account con cui procedere, è possibile scegliere una tr
   
  È possibile spostarsi nel menu tramite le frecce direzionali e selezionare un'operazioni premendo il tasto "Enter".
  Una volta scelta l'operazione da svolgere sarà fornita la corrispondente form in cui sono chieste le informazioni per portare a termine l'operazione. 
+
+ In caso di errore o di corretta esecuzione dell'operazione, il programma fornirà il seguente input:
+ 
+ ```bash
+? Vuoi continuare a svolgere operazioni? (Y/N):
+```
+Se si vuole continuare con l'account corrente allora inserire "Y" o "y", altrimenti digitare "N" o "n" ed il programma terminerà (sarà necessario rieseguirlo con il comando sopra definito "node interfaccia.js")
  
  ##Problematiche
  Nel caso in cui siano presenti dei bug siete pregati di segnalarli aprendo un Issue, prenderemo in esame la richiesta il prima possibile.
