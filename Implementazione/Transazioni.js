@@ -1,105 +1,91 @@
-var path1 = "C:/Windows/System32/network/3-nodes-istanbul-tessera-docker-compose/build/contracts/";
-var path2 = "C:/Windows/System32/network/node_modules/web3";
-var file_contratto = require(path1 + "Gestore_nft.json");
-var Web3 = require(path2);
-var string = JSON.stringify(file_contratto);
-var objectValue = JSON.parse(string);
-var indirizzo_contratto = objectValue['networks']['10']['address'];
-var abi = objectValue['abi'];
-var bytecode = objectValue['bytecode'];
+
 
 class Transazioni {
 
-    constructor() {
-       
+    constructor(nodo_selezionato) {
+        this.path1 = "C:/Windows/System32/network/3-nodes-istanbul-tessera-docker-compose/build/contracts/";
+        this.path2 = "C:/Windows/System32/node_modules/web3";
+        this.file_contratto = require(this.path1 + "Gestore_nft.json");
+        this.Web3 = require(this.path2);
+        this.web3 = new this.Web3("http://localhost:2200" + nodo_selezionato);
+        this.string = JSON.stringify(this.file_contratto);
+        this.objectValue = JSON.parse(this.string);
+        this.indirizzo_contratto = this.objectValue['networks']['10']['address'];
+        this.abi = this.objectValue['abi'];
     }
 
     aggiungiAttore(
+        account_richiedente,
         account,
         tipologia
     ) {
-        let web3 = new Web3("http://localhost:22000")
 
-        var simpleContract = new web3.eth.Contract(abi, indirizzo_contratto, { from: account })
+        var simpleContract = new this.web3.eth.Contract(this.abi, this.indirizzo_contratto, { from: account_richiedente })
 
-        simpleContract.methods.aggiungiAttore(tipologia, account)  //produttore,trasformatore,cliente
-            .send({ from: account })
-            .on('receipt', function (receipt) { //evento che si verifica alla ricezione della ricevuta(ottenuta dall'operazione del 1 nodo)
-                // receipt example
-                console.log(receipt);
-            })
-            .catch((errore) => {
-                console.log("erroreeeeee: " + errore.message);
-            }
-            )
-            .then((receipt) => { //operazione andata a buon fine 
-                console.log("ricevuta finale: ")
-                console.log(receipt);
-            });
-
+        // creiamo una promise in modo che quando viene chiamato questo metodo il chiamante aspetti fino a che
+        // non venga attivato il resolve (cioè quando si entra nel then ed è perciò stata creata la ricevuta)
+        return new Promise((resolve) => {
+            simpleContract.methods.aggiungiAttore(tipologia, account)
+                .send({ from: account_richiedente })
+                .catch((errore) => {
+                    console.log("Ops, sembra che qualcosa sia andato storto: " + errore.message);
+                }).then((ricevuta) => {
+                    if (ricevuta != undefined) console.log(ricevuta)
+                    resolve()
+                });
+        })
     }
 
-aggiungiMateriaPrima (
-    account,
-    id_lotto,
-    CO2,
-    nome
-)
+    aggiungiMateriaPrima(
+        account_richiedente,
+        id_lotto,
+        CO2,
+        nome
+    ) {
 
+        var simpleContract = new this.web3.eth.Contract(this.abi, this.indirizzo_contratto, { from: account_richiedente })
 
-{
-    
-    let web3 = new Web3("http://localhost:22000")
-    var simpleContract = new web3.eth.Contract(abi,indirizzo_contratto, {from:account})
-
-    simpleContract.methods.creaMateriaPrima(id_lotto,CO2,nome)
-    .send({from:account})
-    .on('receipt', function(receipt){
-    // receipt example
-    console.log(receipt);
-    })
-    .catch((errore) => {
-    console.log("erroreeeeee: " + errore.message);}
-    )
-    .then((receipt) => {
-        console.log("ricevuta finale: ");
-        console.log(receipt);
-    });
- 
-    
-    
-
-}
-
-creaProdotto(
-     account,
-     nome_attivita,
-     consumo_attivita,
-     nome_prodotto,
-     materie_prime, 
-     id_lotto)
-
-     {
-        let web3 = new Web3("http://localhost:22000")
-        var simpleContract = new web3.eth.Contract(abi,indirizzo_contratto, {from:account})
-
-        simpleContract.methods.creaProdotto(nome_attivita,consumo_attivita,nome_prodotto,materie_prime,id_lotto)
-        .send({from:account})
-        .on('receipt', function(receipt){
-        // receipt example
-        console.log(receipt);
+        return new Promise((resolve) => {
+            simpleContract.methods.creaMateriaPrima(id_lotto, CO2, nome)
+                .send({ from: account_richiedente })
+                .catch((errore) => {
+                    console.log("Ops, sembra che qualcosa sia andato storto: " + errore.message);
+                }).then((ricevuta) => {
+                    if (ricevuta != undefined) console.log(ricevuta)
+                    resolve()
+                });
         })
-        .catch((errore) => {
-        console.log("erroreeeeee: " + errore.message);}
-        )
-        .then((receipt) => {
-            console.log("ricevuta finale: ");
-            console.log(receipt);
-        });
-     
-        
-        
-     }
+    }
+
+    creaProdotto(
+        account_richiedente,
+        nome_attivita,
+        consumo_attivita,
+        nome_prodotto,
+        materie_prime,
+        id_lotto) {
+        var simpleContract = new this.web3.eth.Contract(this.abi, this.indirizzo_contratto, { from: account_richiedente })
+
+        console.log(nome_attivita)
+        console.log(consumo_attivita)
+        console.log(nome_prodotto)
+        console.log(materie_prime)
+        console.log(id_lotto)
+
+        return new Promise((resolve) => {
+            simpleContract.methods.creaProdotto(nome_attivita, consumo_attivita, nome_prodotto, materie_prime, id_lotto)
+                .send({ from: account_richiedente })
+                .catch((errore) => {
+                    console.log("Ops, sembra che qualcosa sia andato storto: " + errore.message);
+                }).then((ricevuta) => {
+                    if (ricevuta != undefined) console.log(ricevuta)
+                    resolve()
+                });
+        })
+
+
+
+    }
 
 
 }

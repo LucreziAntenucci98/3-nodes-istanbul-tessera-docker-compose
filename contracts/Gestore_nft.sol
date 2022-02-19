@@ -111,8 +111,8 @@ contract Gestore_nft is Ownable {
 
 
             require(_lotti_materie_prime[i] != 0, "Il lotto 0 non \xc3\xa8 valido");
-            require(getOwnerByToken(risorsa.token)==msg.sender, "Non sei in possesso della materia prima con lotto");
-            require(Generica.stringCompare(string(risorsa.tipologia),"materia prima"),"L'elemento con id pari a non \xc3\xa8 una materia prima");
+            require(getOwnerByToken(risorsa.token)==msg.sender, "Non sei in possesso della materia prima con lotto" + risorsa.lotto);
+            require(Generica.stringCompare(string(risorsa.tipologia),"materia prima"),"L'elemento con lotto pari a " + risorsa.lotto + " non \xc3\xa8 una materia prima");
 
             carbonFootprint.setTipologiaUtilizzato(_lotti_materie_prime[i]);
 
@@ -142,7 +142,8 @@ contract Gestore_nft is Ownable {
         uint256 _token
 
     ) public view returns(address) {
-    require(_token!=0 && _token<=carbonFootprint.currentToken(), "Il token inserito non \xc3\xa8 valido"); 
+    require(_token!=0, "Il token inserito non \xc3\xa8 valido"); 
+    require(_token<=carbonFootprint.currentToken(), "Prodotto/materia prima non esistente"); 
            return carbonFootprint.ownerOf(_token);
 
     }
@@ -200,7 +201,7 @@ contract Gestore_nft is Ownable {
     //funzione che verifica che non sia già presente un account con lo stesso tipo di quello passato
     function nonEsistente(
         string memory _tipo, address _indirizzo_account
-    ) private view returns(bool) {
+    ) public view returns(bool) {
 
         if(Generica.stringCompare(_tipo,"produttore")) {
             for (uint i;i<numero_produttori;i++) {
