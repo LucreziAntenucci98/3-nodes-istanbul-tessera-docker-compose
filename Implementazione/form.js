@@ -293,7 +293,7 @@ exports.form_prodotto = function(numero_risorse, numero_attivita) {
 
 
 
-    // per ogni risosa creo un input in cui inserire il corrispondente lotto
+    // per ogni risorsa creo un input in cui inserire il corrispondente lotto
     for(var i=0;i<numero_risorse;i++) {
 
         risorse = {
@@ -311,7 +311,9 @@ exports.form_prodotto = function(numero_risorse, numero_attivita) {
         input_prodotto = input_prodotto.concat(risorse)
     }
 
-
-    
     return inquirer.prompt(input_prodotto)
 };
+
+
+
+

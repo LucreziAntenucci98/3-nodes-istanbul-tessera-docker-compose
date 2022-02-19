@@ -80,7 +80,19 @@ estrazione.ottieniaccounts().then(async function (values) {
         console.log("Perciò sei collegato al nodo: " + nodo);
         console.log()
 
+
+
         function loop() {
+
+            // funzione che chiederà all'utente se vuole continuare la sessione con l'account corrente o se vuole terminare il programma
+        function continua(risposta) {
+            console.log(risposta)
+            if (risposta == "Y" || risposta == "y") {
+                console.log("--------------------");
+                console.log("--------------------");
+                loop();
+            }
+        }
 
             // faccio selezionare all'utente una delle operazioni possibili
             form.form_operazione().then(async function (operazione) {
@@ -123,11 +135,7 @@ estrazione.ottieniaccounts().then(async function (values) {
                             await transazioni.aggiungiAttore(indirizzo_richiedente, attore, dati_attore['tipologia'])
 
                             form.form_continua().then((value) => {
-                                if (value.continua == "Y" || value.continua == "y") {
-                                    console.log("--------------------");
-                                    console.log("--------------------");
-                                    loop();
-                                }
+                                continua(value.continua)
                             })
                         })
                             ;
@@ -148,11 +156,7 @@ estrazione.ottieniaccounts().then(async function (values) {
                                 dati_materia_prima['nome']
                             )
                             form.form_continua().then((value) => {
-                                if (value.continua == "Y" || value.continua == "y") {
-                                    console.log("--------------------");
-                                    console.log("--------------------");
-                                    loop();
-                                }
+                                continua(value.continua)
                             })
                         })
                         break
@@ -177,27 +181,23 @@ estrazione.ottieniaccounts().then(async function (values) {
                                     var consumo_attivita = [];
                                     var nome_attivita = [];
 
-                                    for(var i=0;i<dati_preliminari_prodotto['numero_risorse'];i++) {
-                                        nome_attivita = nome_attivita.concat(dati_prodotto["nome_attivita_"+i])
-                                        consumo_attivita = consumo_attivita.concat(dati_prodotto["CO2_attivita_numero_"+i])
+                                    for (var i = 0; i < dati_preliminari_prodotto['numero_attivita']; i++) {
+                                        nome_attivita = nome_attivita.concat(dati_prodotto["nome_attivita_" + i])
+                                        consumo_attivita = consumo_attivita.concat(dati_prodotto["CO2_attivita_numero_" + i])
                                     }
 
-                                    for(var i=0;i<dati_preliminari_prodotto['numero_attivita'];i++) {
-                                        materie_prime = materie_prime.concat(dati_prodotto["lotto_risorsa_"+i])
+                                    for (var i = 0; i < dati_preliminari_prodotto['numero_risorse']; i++) {
+                                        materie_prime = materie_prime.concat(dati_prodotto["lotto_risorsa_" + i])
                                     }
 
                                     // al metodo passo l'indirizzo di chi ha chiesto la transazione, il lotto, il nome del 
                                     // nuovo prodotto, piu i vettori che rappresentano attivita e materie prime
                                     await transazioni.creaProdotto(
                                         indirizzo_richiedente, nome_attivita, consumo_attivita, dati_prodotto['nome'],
-                                        materie_prime, dati_prodotto['lotto']                                        
+                                        materie_prime, dati_prodotto['lotto']
                                     )
                                     form.form_continua().then((value) => {
-                                        if (value.continua == "Y" || value.continua == "y") {
-                                            console.log("--------------------");
-                                            console.log("--------------------");
-                                            loop();
-                                        }
+                                        continua(value.continua)
                                     })
                                 })
                         })
@@ -223,11 +223,7 @@ estrazione.ottieniaccounts().then(async function (values) {
                                 indirizzo_richiedente, token['token']
                             )
                             form.form_continua().then((value) => {
-                                if (value.continua == "Y" || value.continua == "y") {
-                                    console.log("--------------------");
-                                    console.log("--------------------");
-                                    loop();
-                                }
+                                continua(value.continua)
                             })
                         })
                         break
@@ -244,11 +240,7 @@ estrazione.ottieniaccounts().then(async function (values) {
                                 indirizzo_richiedente, token['token']
                             )
                             form.form_continua().then((value) => {
-                                if (value.continua == "Y" || value.continua == "y") {
-                                    console.log("--------------------");
-                                    console.log("--------------------");
-                                    loop();
-                                }
+                                continua(value.continua)
                             })
                         })
                         break
@@ -265,11 +257,7 @@ estrazione.ottieniaccounts().then(async function (values) {
                                 indirizzo_richiedente, token['lotto']
                             )
                             form.form_continua().then((value) => {
-                                if (value.continua == "Y" || value.continua == "y") {
-                                    console.log("--------------------");
-                                    console.log("--------------------");
-                                    loop();
-                                }
+                                continua(value.continua)
                             })
                         })
                         break
@@ -287,11 +275,7 @@ estrazione.ottieniaccounts().then(async function (values) {
                                 indirizzo_richiedente, token['nome']
                             )
                             form.form_continua().then((value) => {
-                                if (value.continua == "Y" || value.continua == "y") {
-                                    console.log("--------------------");
-                                    console.log("--------------------");
-                                    loop();
-                                }
+                                continua(value.continua)
                             })
                         })
                         break
@@ -308,5 +292,6 @@ estrazione.ottieniaccounts().then(async function (values) {
 
 
 })
+
 
 

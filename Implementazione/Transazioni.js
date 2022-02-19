@@ -14,6 +14,9 @@ class Transazioni {
         this.abi = this.objectValue['abi'];
     }
 
+
+
+    // funzione che riceve l'account richiedente, l'account a cui assegnare il ruolo ed il ruolo stesso
     aggiungiAttore(
         account_richiedente,
         account,
@@ -25,6 +28,8 @@ class Transazioni {
         // creiamo una promise in modo che quando viene chiamato questo metodo il chiamante aspetti fino a che
         // non venga attivato il resolve (cioè quando si entra nel then ed è perciò stata creata la ricevuta)
         return new Promise((resolve) => {
+            // funzione dello smart contract che riceve un account ed una tipologia e se l'attore non ha già quel
+            // ruolo glielo assegna, altrimenti restituisce un errore
             simpleContract.methods.aggiungiAttore(tipologia, account)
                 .send({ from: account_richiedente })
                 .catch((errore) => {
@@ -36,48 +41,67 @@ class Transazioni {
         })
     }
 
+
+
+
+
+
+
+    // funzione che riceve l'account richiedente, un lotto, un nome ed un valore di CO2 e crea la materia prima 
     aggiungiMateriaPrima(
         account_richiedente,
-        id_lotto,
+        lotto,
         CO2,
         nome
     ) {
 
         var simpleContract = new this.web3.eth.Contract(this.abi, this.indirizzo_contratto, { from: account_richiedente })
-
+        // creiamo una promise in modo che quando viene chiamato questo metodo il chiamante aspetti fino a che
+        // non venga attivato il resolve (cioè quando si entra nel then ed è perciò stata creata la ricevuta)
         return new Promise((resolve) => {
-            simpleContract.methods.creaMateriaPrima(id_lotto, CO2, nome)
+            // funzione dello smart contract che riceve un lotto, un valore di CO2 ed un nome e crea la materia prima
+            // nel caso in cui il lotto esista già, o l'attore richiedente non sia un produttore restituisce errore 
+            simpleContract.methods.creaMateriaPrima(lotto, CO2, nome)
                 .send({ from: account_richiedente })
                 .catch((errore) => {
                     console.log("Ops, sembra che qualcosa sia andato storto: " + errore.message);
                 }).then((ricevuta) => {
+                    // se non ci sono stati errori stampo la ricevuta
                     if (ricevuta != undefined) console.log(ricevuta)
                     resolve()
                 });
         })
     }
 
+
+
+
+
+    // funzione che riceve l'account richiedente, una vettore con i nomi delle attività, un vettore con i consumi
+    // delle attività, il nome del nuovo prodotto, un vettore con i lotti delle materie prime utilizzate per la
+    // produzione ed il lotto del nuovo prodotto
     creaProdotto(
         account_richiedente,
         nome_attivita,
         consumo_attivita,
         nome_prodotto,
         materie_prime,
-        id_lotto) {
+        lotto) {
+
         var simpleContract = new this.web3.eth.Contract(this.abi, this.indirizzo_contratto, { from: account_richiedente })
-
-        console.log(nome_attivita)
-        console.log(consumo_attivita)
-        console.log(nome_prodotto)
-        console.log(materie_prime)
-        console.log(id_lotto)
-
+        // creiamo una promise in modo che quando viene chiamato questo metodo il chiamante aspetti fino a che
+        // non venga attivato il resolve (cioè quando si entra nel then ed è perciò stata creata la ricevuta)
         return new Promise((resolve) => {
-            simpleContract.methods.creaProdotto(nome_attivita, consumo_attivita, nome_prodotto, materie_prime, id_lotto)
+            // funzione dello smart contract che riceve un vettore di strighe (nomi delle attività), un vettore di 
+            // interi (consumi delle attività), il nome del nuovo prodotto, un vettore di interi (lotti delle materie prime utilizzate) ed il lotto del nuovo prodotto
+            // restituisce errore se il richiedente non è un trasformatore, se il lottodel nuovo prodotto è già presente nel 
+            // catalogo e se il richiedente non posside le materie prime che ha inserito (o esse non esistono)
+            simpleContract.methods.creaProdotto(nome_attivita, consumo_attivita, nome_prodotto, materie_prime, lotto)
                 .send({ from: account_richiedente })
                 .catch((errore) => {
                     console.log("Ops, sembra che qualcosa sia andato storto: " + errore.message);
                 }).then((ricevuta) => {
+                    // se non ci sono stati errori stampo la ricevuta
                     if (ricevuta != undefined) console.log(ricevuta)
                     resolve()
                 });
