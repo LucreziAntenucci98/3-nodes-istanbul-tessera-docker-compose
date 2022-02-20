@@ -52329,14 +52329,14 @@
         }
       },
       "links": {
-        "Generica": "0x6585c8466ecD527Dda9E09eBC1390ECab0844F2C"
+        "Generica": "0xd9d64b7DC034fAfDbA5DC2902875A67b5d586420"
       },
-      "address": "0xab4cb6367adCBb464eeDe7F397C2931A3DdF5937",
-      "transactionHash": "0xd797072c43bfcae934ac6d994bbfaab9b665192e5edaafc1108cc426a7ece3f5"
+      "address": "0x8a5E2a6343108bABEd07899510fb42297938D41F",
+      "transactionHash": "0x6b36bc8018ea77fdaae243bec5cd3fff2e95f1f8da5077339341ca2c0b910e90"
     }
   },
   "schemaVersion": "3.4.4",
-  "updatedAt": "2022-02-19T19:00:03.763Z",
+  "updatedAt": "2022-02-20T15:22:19.449Z",
   "networkType": "quorum",
   "devdoc": {
     "kind": "dev",
