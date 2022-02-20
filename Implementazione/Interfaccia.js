@@ -1,6 +1,6 @@
 const Estrazione = require("./Estrazione");
 const Transazioni = require("./Transazioni");
-var path = "C:/Windows/System32/node_modules/";
+var path = "C:/Windows/System32/network/node_modules/";
 const chalk = require(path + "chalk");
 const boxen = require(path + "boxen");
 const clear = require(path + "clear");

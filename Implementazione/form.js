@@ -1,4 +1,4 @@
-var path = "C:/Windows/System32/node_modules/";
+var path = "C:/Windows/System32/network/node_modules/";
 const inquirer = require(path+"inquirer");
 
 
@@ -30,10 +30,10 @@ exports.form_by_lotto = function() {
         type: 'number',
         message: 'inserire lotto del prodotto/materia prima: ',
         validate: function (value) {
-            if (value>0) {
+            if (value>0 && Number.isInteger(value)) {
                 return true;
             } else {
-                return 'inserire un lotto valido del prodotto/materia prima';
+                return 'inserire un intero >0';
             }
         }
         
@@ -67,10 +67,10 @@ exports.form_by_lotto = function() {
                 type: 'number',
                 message: 'Lotto materia prima: ',
                 validate: function (value) {
-                    if (value>0) {
+                    if (value>0 && Number.isInteger(value)) {
                         return true;
                     } else {
-                        return 'inserire un lotto valido';
+                        return 'inserire un intero >0';
                     }
                 }
             },
@@ -81,10 +81,10 @@ exports.form_by_lotto = function() {
                 type: 'number',
                 message: 'Valore CO2: ',
                 validate: function (value) {
-                    if (value > 0 && value < 100) {
+                    if (value>0 && Number.isInteger(value)) {
                         return true;
                     } else {
-                        return 'Inserire un valore di CO2 compreso tra 0 e 100 (estremi esclusi)';
+                        return 'inserire un intero >0';
                     }
                 }
             }
@@ -198,7 +198,7 @@ exports.form_numero_prodotto = function() {
             type: 'number',
             message: 'Numero di materie prime utilizzate per la produzione: ',
             validate: function (value) {
-                if (value<5) {
+                if (value<5 && value>0 && Number.isInteger(value)) {
                     return true;
                 } else {
                     return 'Inserire un numero di risorse compreso tra 0 e 5 (estremi esclusi)';
@@ -211,7 +211,7 @@ exports.form_numero_prodotto = function() {
             type: 'number',
             message: 'Numero di attivita svolte per portare a termine la produzione: ',
             validate: function (value) {
-                if (value<5) {
+                if (value<5 && value>0 && Number.isInteger(value)) {
                     return true;
                 } else {
                     return 'Inserire un numero di attivita compreso tra 0 e 5 (estremi esclusi)';
@@ -248,10 +248,10 @@ exports.form_prodotto = function(numero_risorse, numero_attivita) {
             type: 'number',
             message: 'Lotto nuovo prodotto: ',
             validate: function (value) {
-                if (value>0) {
+                if (value>0 && Number.isInteger(value)) {
                     return true;
                 } else {
-                    return 'Inserire un lotto valido';
+                    return 'inserire un intero >0';
                 }
             }
         }
@@ -279,10 +279,10 @@ exports.form_prodotto = function(numero_risorse, numero_attivita) {
             type: 'number',
             message: 'CO2 attivita numero_' + i + ": ",
             validate: function (value) {
-                if (value>0 && value<100) {
+                if (value>0 && Number.isInteger(value)) {
                     return true;
                 } else {
-                    return 'inserire un valore di CO2 compreso tra 0 e 100 (estremi esclusi)';
+                    return 'inserire un intero >0'; 
                 }
             }
         }];

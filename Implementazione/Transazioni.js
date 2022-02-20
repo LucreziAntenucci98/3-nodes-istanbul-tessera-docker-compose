@@ -4,7 +4,7 @@ class Transazioni {
 
     constructor(nodo_selezionato) {
         this.path1 = "C:/Windows/System32/network/3-nodes-istanbul-tessera-docker-compose/build/contracts/";
-        this.path2 = "C:/Windows/System32/node_modules/web3";
+        this.path2 = "C:/Windows/System32/network/node_modules/web3";
         this.file_contratto = require(this.path1 + "Gestore_nft.json");
         this.Web3 = require(this.path2);
         this.web3 = new this.Web3("http://localhost:2200" + nodo_selezionato);
