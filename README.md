@@ -1,4 +1,4 @@
-# Green-chain
+# Green-chain (DOBBIAMO MODIFICARE I LIMITI DEI VALORI DI CO2 SIA SULLE FORM CHE NEL CODICE SOLIDITY)
 
 Green-chain è un'applicazione che consente di inserire prodotti e materie prime all'interno di una blockchain costituita da 3 nodi, in modo da garantire una completa tracciabilità dei dati.
 
