@@ -1,8 +1,8 @@
 class Call {
 
     constructor() {
-        this.path1 = "/Users/alessandro/Documents/vscode/CarbonFootprint_Project/network/prova/build/contracts/";
-        this.path2 = "/Users/alessandro/Documents/vscode/CarbonFootprint_Project/node_modules/web3";
+        this.path1 = "../build/contracts/";
+        this.path2 = "../node_modules/web3";
         this.file_contratto = require(this.path1 + "Gestore_nft.json");
         this.Web3 = require(this.path2);
         this.string = JSON.stringify(this.file_contratto);
@@ -179,21 +179,21 @@ class Call {
 
 
 
-    // funzione che riceve un indirizzo da controllare ed un ruolo e ritorna falso se l'indirizzo ha già quel ruolo
+    // funzione che riceve un indirizzo da controllare ed un ruolo e ritorna vero se l'indirizzo ha già quel ruolo
     controlloRuolo(indirizzo_da_controllare,ruolo) {
         let web3 = new this.Web3("http://localhost:22000");
         var simpleContract = new web3.eth.Contract(this.abi, this.indirizzo_contratto)
 
         // uso la promise affinché chi chiama la funzione possa usare await per aspettare che termini l'esecuzione
         return new Promise((resolve) => {
-            // funzione dello smart contract che restituisce vero se l'attore non ha quel ruolo
-            simpleContract.methods.nonEsistente(ruolo, indirizzo_da_controllare).call()
+            // funzione dello smart contract che restituisce vero se ricopre il ruolo passato
+            simpleContract.methods.esistente(ruolo, indirizzo_da_controllare).call()
                 .catch((errore) => {
                     console.log("Errore: " + errore.message);
                 }
                 )
                 .then((receipt) => {
-                    // ritorna false se l'indirizzo ha il ruolo passato 
+                    // ritorna true se l'indirizzo ricopre il ruolo passato 
                     resolve(receipt);
                 });
             //parentesi che chiude la "return new promise"

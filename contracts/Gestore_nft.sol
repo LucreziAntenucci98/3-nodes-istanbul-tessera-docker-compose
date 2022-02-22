@@ -5,10 +5,13 @@ pragma solidity>=0.5.16;
 import "./CarbonFootprint.sol";
 import "./Generica.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
 
 
 contract Gestore_nft is Ownable {
+
+    using SafeMath for uint32;
 
 
 
@@ -46,8 +49,8 @@ contract Gestore_nft is Ownable {
 
         // errore se l'account inserito compare già nel mapping relativo al ruolo richiesto
         require(
-            nonEsistente(_tipo, _indirizzo_account),
-            "Account gi\xC3\xa0 presente con questo ruolo"
+            !esistente(_tipo, _indirizzo_account),
+            "Account gi\u00FE presente con questo ruolo"
             );
 
         // in base al ruolo passato, l'account viene inserito nel corrispondente mapping
@@ -77,13 +80,13 @@ contract Gestore_nft is Ownable {
     ) external {
 
         // errore se il richiedente non è un produttore
-        require(!nonEsistente("produttore", msg.sender), "Solo i produttori possono aggiungere materie prime");
+        require(esistente("produttore", msg.sender), "Solo i produttori possono aggiungere materie prime");
         // errore se il lotto inserito è 0
         require(_lotto != 0, "Id lotto non valido");
         // errore se i valori di CO2 non rispettano le richieste
         require(_valore_CO2>0 && _valore_CO2<100, "Valore di CO2 non valido");
         // errore se il lotto inserito è già presente nel catalogo
-        require(carbonFootprint.getRisorsaByLotto(_lotto).exists==false, "Id lotto gi\xC3\xa0 presente");
+        require(carbonFootprint.getRisorsaByLotto(_lotto).exists==false, "Id lotto gi\u00FE presente");
         // creo 3 array vuoti, perché al "crea prodotto" devono essere passati anche le riorse usate per produrre la risorsa
         // le attività svolte ed il loro consumo, ma poiché stiamo inserendo una materia prima, tali valori sono nulli
         uint256[] memory vettore_risorse;
@@ -101,8 +104,10 @@ contract Gestore_nft is Ownable {
         address _destinatario, uint256 _lotto
         ) external {
         CarbonFootprint.Risorsa memory risorsa = carbonFootprint.getRisorsaByLotto(_lotto);
+        // errore se il richiedente non possiede la risorsa
         require(getOwnerByToken(risorsa.token)==msg.sender, "Non sei in possesso della risorsa");  
-        require(!nonEsistente(_destinatario), "L'indirizzo deve appartenere ad un produttore, trasformatore o cliente");
+        // errore se il destinatario non è un cliente, trasformatore o produttore
+        require(esistente(_destinatario), "L'indirizzo deve appartenere ad un produttore, trasformatore o cliente");
         carbonFootprint.transferFrom(msg.sender, _destinatario, risorsa.token);
     }
 
@@ -114,9 +119,9 @@ contract Gestore_nft is Ownable {
     ) external {
 
         // errore se il lotto del prodotto da creare esiste già 
-        require(carbonFootprint.getRisorsaByLotto(_lotto_nuovo_prodotto).exists==false, "Il lotto inserito \xc3\xa8 gi\xC3\xa0 presente");
+        require(carbonFootprint.getRisorsaByLotto(_lotto_nuovo_prodotto).exists==false, "Il lotto inserito \xc3\xa8 gi\xc3\xa1 presente");
         // errore se il richiedente non è un trasformatore
-        require(!nonEsistente("trasformatore", msg.sender), "Solo i trasformatori possono aggiungere un prodotto trasformato");
+        require(esistente("trasformatore", msg.sender), "Solo i trasformatori possono aggiungere un prodotto trasformato");
         // inizializzo la CO2 totale a 0, poi ci sommerò quella delle attività svolte e quella delle materie prime utilizzate
         uint32 CO2_totale = 0; 
 
@@ -125,29 +130,35 @@ contract Gestore_nft is Ownable {
 
             // estraggo la risorsa dal catalogo conoscendone il lotto
             CarbonFootprint.Risorsa memory risorsa = carbonFootprint.getRisorsaByLotto(_lotti_materie_prime[i]);
+       
+            // errore se la materia prima non esiste
+            require(risorsa.exists==true, "Materia prima non presente");
 
             // errore se il lotto è 0 
             require(_lotti_materie_prime[i] != 0, "Il lotto 0 non \xc3\xa8 valido");
+            // trasformo l'uint256 in una stringa in modo da concatenarla nell'errore
+            string memory stringa_lotto = Generica.toString(_lotti_materie_prime[i]);
             // errore se il richiedente non possiede la risorsa
-            require(getOwnerByToken(risorsa.token)==msg.sender, "Non sei in possesso della materia prima con lotto");
+            require(getOwnerByToken(risorsa.token)==msg.sender, Generica.concatenate("Non sei in possesso della materia prima con lotto", stringa_lotto));
             // errore se la risorsa non è una materia prima
-            require(Generica.stringCompare(string(risorsa.tipologia),"materia prima"),"L'elemento con lotto pari a non \xc3\xa8 una materia prima");
+            require(Generica.stringCompare(string(risorsa.tipologia),"materia prima"),Generica.concatenate(Generica.concatenate("L'elemento con lotto pari a",stringa_lotto), "non \xc3\xa8 una materia prima"));
 
             // settiamo il valore "tipologia" della risorsa a "utilizzata" in modo che non possa essere usata per 
             // produrre nuovi prodotti
             carbonFootprint.setTipologiaUtilizzato(_lotti_materie_prime[i]);
 
             // sommo alla CO2 totale quella della materia prima corrente
-            CO2_totale+=risorsa.valore_CO2;
-
+            CO2_totale.add(risorsa.valore_CO2);
+            
         }
         
 
         // per ogni attività sommo i consumi di CO2 al valore di CO2 totale
         for (uint i=0;i<_valori_CO2_attivita.length;i++) {  
 
-            CO2_totale += (_valori_CO2_attivita[i]);
-        }
+            // sommo i contributi delle singole attivita
+            CO2_totale.add(_valori_CO2_attivita[i]);
+           }
             
         // creo il prodotto passando id del lotto, CO2 totale, vettore con i nomi delle attività svolte, vettore con i 
         // consumi delle attività svolte, tipologia (prodotto trasformato), possessore (chi ha mandato il messaggio),
@@ -223,35 +234,35 @@ contract Gestore_nft is Ownable {
         }
 
         // errore se nessun prodotto ha il nome passato
-        require(trovati!=0, "Nessun prodotto o materia prima trovati con il nome inserito");
+        require(trovati!=0, "Non \xc3\xa8 stato trovato alcun prodotto/materia prima con il nome inserito");
 
         return risorse;
     }  
 
 
-    //funzione che verifica che non sia già presente un account con lo stesso tipo di quello passato
-    function nonEsistente(string memory _tipo, address _indirizzo_account)
+    //funzione che restituisce vero se l'account ricopre già il ruolo passato in input
+    function esistente(string memory _ruolo, address _indirizzo_account)
         public view returns(bool) {
 
         // se il tipo passato è produttore allora cerco sul mapping dei produttori
-        if(Generica.stringCompare(_tipo,"produttore")) {
+        if(Generica.stringCompare(_ruolo,"produttore")) {
             for (uint i;i<numero_produttori;i++) {
-                if(_indirizzo_account == produttori[i]) return false;
+                if(_indirizzo_account == produttori[i]) return true;
             }
         }
         // se il tipo passato è trasformatore allora cerco sul mapping dei trasformatore
-        else if(Generica.stringCompare(_tipo, "trasformatore")) {
+        else if(Generica.stringCompare(_ruolo, "trasformatore")) {
             for (uint i;i<numero_trasformatori;i++) {
-                if(_indirizzo_account == trasformatori[i]) return false;
+                if(_indirizzo_account == trasformatori[i]) return true;
             }
         }
         // se il tipo passato è cliente allora cerco sul mapping dei clienti
-        else if(Generica.stringCompare(_tipo, "cliente")) {
+        else if(Generica.stringCompare(_ruolo, "cliente")) {
             for (uint i;i<numero_clienti;i++) {
-                if(_indirizzo_account == clienti[i]) return false;
+                if(_indirizzo_account == clienti[i]) return true;
             }
         }
-        return true;
+        return false;
     }
 
 
@@ -259,23 +270,23 @@ contract Gestore_nft is Ownable {
 
     // funzione che scorre tutti e tre i mapping degli attori per controllare se l'account appartiene ad un 
     // produttore, trasformatore o destinatario
-    function nonEsistente(address _indirizzo_account)
+    function esistente(address _indirizzo_account)
         private view returns(bool) {
 
         for (uint i;i<numero_produttori;i++) {
-            if(_indirizzo_account == produttori[i]) return false;
+            if(_indirizzo_account == produttori[i]) return true;
         }
 
         for (uint i;i<numero_trasformatori;i++) {
-            if(_indirizzo_account == trasformatori[i]) return false;
+            if(_indirizzo_account == trasformatori[i]) return true;
         }
         
 
         for (uint i;i<numero_clienti;i++) {
-            if(_indirizzo_account == clienti[i]) return false;
+            if(_indirizzo_account == clienti[i]) return true;
         }
 
-        return true;
+        return false;
     }
 
 }

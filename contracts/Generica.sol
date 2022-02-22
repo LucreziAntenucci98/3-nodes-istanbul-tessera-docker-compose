@@ -15,17 +15,30 @@ library Generica {
 
 
 
-    function strToUint(string memory _str) public pure returns(uint256 res) {
-    
-    for (uint256 i = 0; i < bytes(_str).length; i++) {
-        if ((uint8(bytes(_str)[i]) - 48) < 0 || (uint8(bytes(_str)[i]) - 48) > 9) {
-            return 0;
+    function toString(uint256 value) internal pure returns (string memory) {
+        
+        if (value == 0) {
+            return "0";
         }
-        res += (uint8(bytes(_str)[i]) - 48) * 10**(bytes(_str).length - i - 1);
+        uint256 temp = value;
+        uint256 digits;
+        while (temp != 0) {
+            digits++;
+            temp /= 10;
+        }
+        bytes memory buffer = new bytes(digits);
+        while (value != 0) {
+            digits -= 1;
+            buffer[digits] = bytes1(uint8(48 + uint256(value % 10)));
+            value /= 10;
+        }
+        return string(buffer);
     }
-    
-    return res;
-    }
+
+
+    function concatenate(string memory a,string memory b) public pure returns (string memory){
+        return string(abi.encodePacked(a,' ',b));
+    } 
 
 
 }

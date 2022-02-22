@@ -1,0 +1,13 @@
+{
+  "dependencies": {
+    "@openzeppelin/contracts": "^4.5.0",
+    "boxen": "4.0",
+    "chalk": "2.4",
+    "clear": "^0.1.0",
+    "clui": "^0.3.6",
+    "figlet": "^1.5.2",
+    "inquirer": "^8.2.0",
+    "safemath": "^1.0.6",
+    "web3": "^1.7.0"
+  }
+}

@@ -1,6 +1,6 @@
 const Call = require("./call");
 const Send = require("./send");
-var path = "/Users/alessandro/Documents/vscode/CarbonFootprint_Project/node_modules/";
+var path = "../node_modules/";
 const chalk = require(path + "chalk");
 const boxen = require(path + "boxen");
 const clear = require(path + "clear");
@@ -38,7 +38,7 @@ var estrazione = new Call();
 estrazione.ottieniaccounts().then(async function (values) {
 
     // estraggo i privilegi dei vari attori
-    var privilegi = [" (amministratore)", " ", " "];
+    var privilegi = [" (amministratore) ", " ", " "];
 
     for (var i = 0; i < 3; i++) {
         // "controllo ruolo" ritorna falso se l'attore ricopre quel ruolo, perciò se il suo negato
@@ -47,14 +47,14 @@ estrazione.ottieniaccounts().then(async function (values) {
         var tra = await estrazione.controlloRuolo(values[i], "trasformatore");
         var cli = await estrazione.controlloRuolo(values[i], "cliente");
         //restituisce falso se l'attore ricopre il ruolo..................
-        if (!prod) privilegi[i] += " (produttore)"
-        if (!tra) privilegi[i] += " (trasformatore)"
-        if (!cli) privilegi[i] += " (cliente)"
+        if (prod) privilegi[i] += "(produttore)"
+        if (tra) privilegi[i] += "(trasformatore)"
+        if (cli) privilegi[i] += "(cliente)"
     }
 
     // fornisco la form con i 3 account estratti precedentemente ed il vettore di privilegi 
     //values contiene gli indirizzi
-    form.form_account(values[0], values[1], values[2], privilegi).then((selezionato) => {
+    form.form_account(values, privilegi).then((selezionato) => {
 
         // visto che le risposte nella form sono del tipo "account + privilegi attore"
         // è necessario selezionare solo la parte relativa all'account, cioè quella prima dello spazio
@@ -79,7 +79,6 @@ estrazione.ottieniaccounts().then(async function (values) {
         function loop() {
             // funzione che chiederà all'utente se vuole continuare la sessione con l'account corrente o se vuole terminare il programma
             function continua(risposta) {
-                console.log(risposta)
                 if (risposta == "Y" || risposta == "y") {
                     console.log("--------------------");
                     console.log("--------------------");
@@ -100,7 +99,7 @@ estrazione.ottieniaccounts().then(async function (values) {
                     case "Inserimento attore":
 
                         // estraggo i privilegi dei vari attori
-                        var privilegi = [" (amministratore)", " ", " "];
+                        var privilegi = [" (amministratore) ", " ", " "];
 
                         for (var i = 0; i < 3; i++) {
                             // "controllo ruolo" ritorna falso se l'attore ricopre quel ruolo, perciò se il suo negato
@@ -108,15 +107,15 @@ estrazione.ottieniaccounts().then(async function (values) {
                             var prod = await estrazione.controlloRuolo(values[i], "produttore");
                             var tra = await estrazione.controlloRuolo(values[i], "trasformatore");
                             var cli = await estrazione.controlloRuolo(values[i], "cliente");
-                            if (!prod) privilegi[i] += " (produttore)"
-                            if (!tra) privilegi[i] += " (trasformatore)"
-                            if (!cli) privilegi[i] += " (cliente)"
+                            if (prod) privilegi[i] += "(produttore)"
+                            if (tra) privilegi[i] += "(trasformatore)"
+                            if (cli) privilegi[i] += "(cliente)"
                         }
 
 
                         // fornisco la form in cui inserire account e tipologia, poi 
                         // chiamo il metodo della classe transazioni per inserire l'attore
-                        form.form_inserimento_attore(values[0], values[1], values[2], privilegi).then(async function (dati_attore) {
+                        form.form_inserimento_attore(values, privilegi).then(async function (dati_attore) {
 
                             // visto che le risposte nella form sono del tipo "account + tipologia attore"
                             // è necessario selezionare solo la parte relativa all'account, cioè quella prima dello spazio

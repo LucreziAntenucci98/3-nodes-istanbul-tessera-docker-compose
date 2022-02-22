@@ -1,20 +1,264 @@
-var path = "/Users/alessandro/Documents/vscode/CarbonFootprint_Project/node_modules/";
-const inquirer = require(path+"inquirer");
+var path = "../node_modules/";
+const inquirer = require(path + "inquirer");
 
 
+//////////////////////////// FORM TRANSAZIONI ////////////////////////////////
+
+
+///// ATTORE /////
+
+//form in cui scegliere quale attore selezionare e quale ruolo assegnargli 
+exports.form_inserimento_attore = function (address, privilegi) {
+    console.log(address[0])
+
+    const inserimento_attore = [
+        {
+            type: 'rawlist',
+            name: "account",
+            message: "Seleziona l'account a cui assegnare il ruolo: ",
+            choices: [address[0] + privilegi[0], address[1] + privilegi[1], address[2] + privilegi[2]],
+        },
+        {
+            type: 'rawlist',
+            name: "tipologia",
+            message: "Seleziona il ruolo: ",
+            choices: ['produttore', 'trasformatore', 'cliente'],
+        }
+    ]
+    return inquirer.prompt(inserimento_attore)
+};
+
+
+
+
+
+
+///// MATERIA PRIMA /////
+
+// form in cui inserire, nome, valore CO2 e lotto di una nuova materia prima
+exports.form_materia_prima = function () {
+    const materia_prima = [
+        {
+            name: 'nome',
+            type: 'input',
+            message: 'Nome materia prima: ',
+            validate: function (value) {
+                if (value.length > 0 && value.length < 32) {
+                    return true;
+                } else {
+                    return 'inserire un nome con meno di 32 caratteri';
+                }
+            }
+        },
+
+        {
+            name: 'lotto',
+            type: 'input',
+            message: 'inserire lotto della materia prima: ',
+            validate: function (value) {
+                var numero = parseInt(value)
+                // errore se l'input non è un numero, è < 0 o maggiore del limite massimo degli uint in solidity
+                if (numero != NaN && numero > 0 && numero < Math.pow(2, 256) - 1) {
+                    return true;
+                } else {
+                    return 'inserire un intero > 0';
+                }
+            }
+
+        },
+
+
+        {
+            name: 'CO2',
+            type: 'input',
+            message: 'Valore CO2: ',
+            validate: function (value) {
+                var numero = parseInt(value)
+                // errore se l'input non è un numero, è < 0 o maggiore del limite massimo degli uint in solidity
+                if (numero != NaN && numero > 0 && numero < Math.pow(2, 256) - 1) {
+                    return true;
+                } else {
+                    return 'inserire un intero compreso tra 0 e 100 (estremi esclusi)';
+                }
+            }
+        }
+    ]
+    return inquirer.prompt(materia_prima)
+};
+
+
+
+
+
+
+///// PRODOTTO PRELIMINARE /////
+
+// form preliminare per l'inserimento dei prodotti in cui scegliere quanti materie prime ed attività inserire
+exports.form_numero_prodotto = function () {
+    const numero_prodotto = [
+        {
+            name: 'numero_risorse',
+            type: 'input',
+            message: 'Numero di materie prime utilizzate per la produzione: ',
+            validate: function (value) {
+                var numero = parseInt(value)
+                if (numero != NaN && numero > 0 && numero < 5) {
+                    return true;
+                } else {
+                    return 'Inserire un numero di risorse compreso tra 0 e 5 (estremi esclusi)';
+                }
+            }
+        },
+
+        {
+            name: 'numero_attivita',
+            type: 'input',
+            message: 'Numero di attivita svolte per portare a termine la produzione: ',
+            validate: function (value) {
+                var numero = parseInt(value)
+                if (numero != NaN && numero > 0 && numero < 5) {
+                    return true;
+                } else {
+                    return 'Inserire un numero di attivita compreso tra 0 e 5 (estremi esclusi)';
+                }
+            }
+        }
+    ]
+    return inquirer.prompt(numero_prodotto)
+};
+
+
+
+
+
+///// PRODOTTO /////
+
+// form in cui inserire i lotti delle materie prime utilizzate, le attivita svolte ed il loro consumo,
+// il nome del nuovo prodotto ed il lotto del nuovo prodotto
+exports.form_prodotto = function (numero_risorse, numero_attivita) {
+
+    var input_prodotto = [
+        {
+            name: 'nome',
+            type: 'input',
+            message: 'Nome nuovo prodotto: ',
+            validate: function (value) {
+                if (value.length > 0 && value.length < 32) {
+                    return true;
+                } else {
+                    return 'inserire un nome con meno di 32 caratteri';
+                }
+            }
+        },
+
+        {
+            name: 'lotto',
+            type: 'input',
+            message: 'inserire lotto del nuovo prodotto: ',
+            validate: function (value) {
+                var numero = parseInt(value)
+                // errore se l'input non è un numero, è < 0 o maggiore del limite massimo degli uint in solidity
+                if (numero != NaN && numero > 0 && numero < Math.pow(2, 256) - 1) {
+                    return true;
+                } else {
+                    return 'inserire un intero > 0';
+                }
+            }
+
+        }
+    ]
+
+
+    // per ogni attivita creo un input per il nome e per il consumo
+    for (var i = 0; i < numero_attivita; i++) {
+
+        var attivita = [{
+            name: 'nome_attivita_' + i,
+            type: 'input',
+            message: 'Nome attivita numero_' + i + ": ",
+            validate: function (value) {
+                if (value.length > 0 && value.length < 32) {
+                    return true;
+                } else {
+                    return 'Inserire un nome con meno di 32 caratteri';
+                }
+            }
+        },
+
+        {
+            name: 'CO2_attivita_numero_' + i,
+            type: 'input',
+            message: 'CO2 attivita numero_' + i + ": ",
+            validate: function (value) {
+                var numero = parseInt(value)
+                if (numero != NaN && numero > 0 && numero < 100) {
+                    return true;
+                } else {
+                    return 'inserire un intero compreso tra 0 e 100 (estremi esclusi)';
+                }
+            }
+        }];
+
+
+        input_prodotto = input_prodotto.concat(attivita)
+    }
+
+
+
+    // per ogni risorsa creo un input in cui inserire il corrispondente lotto
+    for (var i = 0; i < numero_risorse; i++) {
+
+        risorse = {
+            name: 'lotto_risorsa_' + i,
+            type: 'input',
+            message: 'Lotto materia prima numero_' + i + ": ",
+            validate: function (value) {
+                var numero = parseInt(value)
+                // errore se l'input non è un numero, è < 0 o maggiore del limite massimo degli uint in solidity
+                if (numero != NaN && numero > 0 && numero < Math.pow(2, 256) - 1) {
+                    return true;
+                } else {
+                    return 'Inserire un numero intero > 0';
+                }
+            }
+        }
+        input_prodotto = input_prodotto.concat(risorse)
+    }
+
+    return inquirer.prompt(input_prodotto)
+};
+
+
+
+
+
+
+///// TRASFERIMENTO /////
+
+
+
+
+
+
+//////////////////////////// FORM ESTRAZIONE ////////////////////////////////
+
+
+///// BY TOKEN /////
 
 // form in cui inserire il token di una materia prima/prodotto
-exports.form_by_token = function() {
-    const by_token =  
+exports.form_by_token = function () {
+    const by_token =
     {
         name: 'token',
         type: 'input',
         message: 'inserire token del prodotto/materia prima: ',
         validate: function (value) {
-            if (value.length) {
+            var numero = parseInt(value)
+            // errore se l'input non è un numero, è < 0 o maggiore del limite massimo degli uint in solidity
+            if (numero != NaN && numero > 0 && numero < Math.pow(2, 256) - 1) {
                 return true;
             } else {
-                return 'inserire token del prodotto/materia prima';
+                return 'inserire un intero > 0';
             }
         }
     }
@@ -22,21 +266,29 @@ exports.form_by_token = function() {
 };
 
 
+
+
+
+
+///// BY LOTTO /////
+
 // form in cui inserire il lotto del prodotto/materia prima
-exports.form_by_lotto = function() {
+exports.form_by_lotto = function () {
     const by_lotto =  //tutte le estrazione delle informazioni a partire dal lotto del proddotto
     {
         name: 'lotto',
         type: 'input',
         message: 'inserire lotto del prodotto/materia prima: ',
         validate: function (value) {
-            if (Number.isInteger(value)) {
+            var numero = parseInt(value)
+            // errore se l'input non è un numero, è < 0 o maggiore del limite massimo degli uint in solidity
+            if (numero != NaN && numero > 0 && numero < Math.pow(2, 256) - 1) {
                 return true;
             } else {
-                return 'inserire un intero >0';
+                return 'inserire un intero > 0';
             }
         }
-        
+
     }
     return inquirer.prompt(by_lotto);
 };
@@ -46,97 +298,38 @@ exports.form_by_lotto = function() {
 
 
 
-// form in cui inserire, nome, valore CO2 e lotto di una nuova materia prima
-    exports.form_materia_prima = function() {
-        const materia_prima = [
-            {
-                name: 'nome',
-                type: 'input',
-                message: 'Nome materia prima: ',
-                validate: function (value) {
-                    if (value.length) {
-                        return true;
-                    } else {
-                        return 'inserire il nome';
-                    }
-                }
-            },
+///// BY NOME /////
 
-            {
-                name: 'lotto',
-                type: 'number',
-                message: 'Lotto materia prima: ',
-                validate: function (value) {
-                    if (value>0 && Number.isInteger(value)) {
-                        return true;
-                    } else {
-                        return 'inserire un intero >0';
-                    }
-                }
-            },
-
-
-            {
-                name: 'CO2',
-                type: 'number',
-                message: 'Valore CO2: ',
-                validate: function (value) {
-                    if (value>0 && Number.isInteger(value)) {
-                        return true;
-                    } else {
-                        return 'inserire un intero >0';
-                    }
-                }
-            }
-        ]
-        return inquirer.prompt(materia_prima)
-    };
-
-
-
-    // form in cui inserire il nome della materia prima/prodotto
-    exports.form_by_nome = function() {
-        const by_nome =  
+// form in cui inserire il nome della materia prima/prodotto
+exports.form_by_nome = function () {
+    const by_nome =
     {
         name: 'nome',
         type: 'input',
-        message: 'inserire nome del prodotto/materia prima: ',
+        message: 'Nome materia prima/prodotto: ',
         validate: function (value) {
-            if (value.length) {
+            if (value.length > 0 && value.length < 32) {
                 return true;
             } else {
-                return 'inserire nome del prodotto/materia prima';
+                return 'inserire un nome con meno di 32 caratteri';
             }
         }
     }
-        return inquirer.prompt(by_nome);
-    };
-
-
-
-
-//form in cui scegliere quale attore selezionare e quale ruolo assegnargli 
-exports.form_inserimento_attore = function(address1, address2, address3, privilegi) {
-    const inserimento_attore = [
-        {
-            type: 'rawlist',
-            name: "account",
-            message: "Seleziona l'account a cui assegnare il ruolo: ",
-            choices: [address1 + privilegi[0], address2 + privilegi[1], address3 + privilegi[2]],
-        },
-        {
-            type: 'rawlist',
-            name: "tipologia",
-            message: "Seleziona il ruolo: ",
-            choices: ['produttore','trasformatore','cliente'],
-        }
-    ]
-    return inquirer.prompt(inserimento_attore)
+    return inquirer.prompt(by_nome);
 };
 
 
+
+
+
+
+//////////////////////////// FORM GENERICHE ////////////////////////////////
+
+
+///// OPERAZIONI /////
+
 // form in cui scegliere quale operazione si vuole portare a termine
-exports.form_operazione = function() {
+exports.form_operazione = function () {
     const lista_operazioni = {
         type: 'rawlist',
         name: "attivita",
@@ -153,21 +346,31 @@ exports.form_operazione = function() {
 
 
 
+
+
+
+///// ACCOUNT /////
+
 // form in cui scegliere con quale account "autenticarsi"
-exports.form_account = function(address1, address2, address3, privilegi) {
+exports.form_account = function (address, privilegi) {
     const account = {
         type: 'rawlist',
         name: "account",
         message: "Seleziona l'account con cui proseguire: ",
-        choices: [address1 + privilegi[0], address2 + privilegi[1], address3 + privilegi[2]],
+        choices: [address[0] + privilegi[0], address[1] + privilegi[1], address[2] + privilegi[2]],
     }
     return inquirer.prompt(account);
 };
 
 
 
+
+
+
+///// CONTINUA /////
+
 //form in cui scegliere se continuare a fare operazioni con l'account corrente o se uscire dalla sessione
-exports.form_continua = function() {
+exports.form_continua = function () {
     const continua =
     {
         name: 'continua',
@@ -186,130 +389,6 @@ exports.form_continua = function() {
 
 
 
-
-// form preliminare per l'inserimento dei prodotti in cui scegliere quanti materie prime ed attività inserire
-exports.form_numero_prodotto = function() {
-    const numero_prodotto = [
-        {
-            name: 'numero_risorse',
-            type: 'number',
-            message: 'Numero di materie prime utilizzate per la produzione: ',
-            validate: function (value) {
-                if (value<5 && value>0 && Number.isInteger(value)) {
-                    return true;
-                } else {
-                    return 'Inserire un numero di risorse compreso tra 0 e 5 (estremi esclusi)';
-                }
-            }
-        },
-
-        {
-            name: 'numero_attivita',
-            type: 'number',
-            message: 'Numero di attivita svolte per portare a termine la produzione: ',
-            validate: function (value) {
-                if (value<5 && value>0 && Number.isInteger(value)) {
-                    return true;
-                } else {
-                    return 'Inserire un numero di attivita compreso tra 0 e 5 (estremi esclusi)';
-                }
-            }
-        }
-    ]
-    return inquirer.prompt(numero_prodotto)
-};
-
-
-
-
-// form in cui inserire i lotti delle materie prime utilizzate, le attivita svolte ed il loro consumo,
-// il nome del nuovo prodotto ed il lotto del nuovo prodotto
-exports.form_prodotto = function(numero_risorse, numero_attivita) {
-
-    var input_prodotto = [
-        {
-            name: 'nome',
-            type: 'input',
-            message: 'Nome nuovo prodotto: ',
-            validate: function (value) {
-                if (value.length) {
-                    return true;
-                } else {
-                    return 'Inserire il nome';
-                }
-            }
-        },
-
-        {
-            name: 'lotto',
-            type: 'number',
-            message: 'Lotto nuovo prodotto: ',
-            validate: function (value) {
-                if (value>0 && Number.isInteger(value)) {
-                    return true;
-                } else {
-                    return 'inserire un intero >0';
-                }
-            }
-        }
-    ]
-
-
-    // per ogni attivita creo un input per il nome ed un number per il consumo
-    for(var i=0;i<numero_attivita;i++) {
-
-        var attivita = [{
-            name: 'nome_attivita_' + i,
-            type: 'input',
-            message: 'Nome attivita numero_' + i + ": ",
-            validate: function (value) {
-                if (value.length) {
-                    return true;
-                } else {
-                    return 'Inserire il nome';
-                }
-            }
-        },
-
-        {
-            name: 'CO2_attivita_numero_' + i,
-            type: 'number',
-            message: 'CO2 attivita numero_' + i + ": ",
-            validate: function (value) {
-                if (value>0 && Number.isInteger(value)) {
-                    return true;
-                } else {
-                    return 'inserire un intero >0'; 
-                }
-            }
-        }];
-
-        
-        input_prodotto = input_prodotto.concat(attivita)
-    }
-
-
-
-    // per ogni risorsa creo un input in cui inserire il corrispondente lotto
-    for(var i=0;i<numero_risorse;i++) {
-
-        risorse = {
-            name: 'lotto_risorsa_' + i,
-            type: 'input',
-            message: 'Lotto materia prima numero_' + i + ": ",
-            validate: function (value) {
-                if (value.length) {
-                    return true;
-                } else {
-                    return 'Inserire un lotto ammissibile';
-                }
-            }
-        }
-        input_prodotto = input_prodotto.concat(risorse)
-    }
-
-    return inquirer.prompt(input_prodotto)
-};
 
 
 

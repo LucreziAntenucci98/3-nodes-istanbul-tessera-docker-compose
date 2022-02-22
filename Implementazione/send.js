@@ -1,8 +1,8 @@
 class Send {
 
     constructor(nodo_selezionato) {
-        this.path1 = "/Users/alessandro/Documents/vscode/CarbonFootprint_Project/network/prova/build/contracts/";
-        this.path2 = "/Users/alessandro/Documents/vscode/CarbonFootprint_Project/node_modules/web3";
+        this.path1 = "../build/contracts/";
+        this.path2 = "../node_modules/web3";
         this.file_contratto = require(this.path1 + "Gestore_nft.json");
         this.Web3 = require(this.path2);
         this.web3 = new this.Web3("http://localhost:2200" + nodo_selezionato);
