@@ -37,7 +37,7 @@ library Generica {
 
 
     function concatenate(string memory a,string memory b) public pure returns (string memory){
-        return string(abi.encodePacked(a,' ',b));
+        return string(abi.encodePacked(a,b));
     } 
 
 

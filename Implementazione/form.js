@@ -1,5 +1,6 @@
-var path = "../node_modules/";
-const inquirer = require(path + "inquirer");
+const node_modules_path = require("./config").node_modules_path;
+const inquirer = require(node_modules_path + "inquirer");
+
 
 
 //////////////////////////// FORM TRANSAZIONI ////////////////////////////////
@@ -43,6 +44,11 @@ exports.form_materia_prima = function () {
             type: 'input',
             message: 'Nome materia prima: ',
             validate: function (value) {
+                var reg = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/
+                if (reg.test(value))
+                {
+                    return 'sono ammesse lettere dalla A alla Z e numeri da 0 a 9'
+                }
                 if (value.length > 0 && value.length < 32) {
                     return true;
                 } else {
@@ -55,10 +61,14 @@ exports.form_materia_prima = function () {
             name: 'lotto',
             type: 'input',
             message: 'inserire lotto della materia prima: ',
-            validate: function (value) {
+            validate: function (value) 
+                {var reg = /[,.]/
                 var numero = parseInt(value)
+                
                 // errore se l'input non è un numero, è < 0 o maggiore del limite massimo degli uint in solidity
-                if (numero != NaN && numero > 0 && numero < Math.pow(2, 256) - 1) {
+                
+                if (!reg.test(value) && numero != NaN && numero > 0 && numero < Math.pow(2, 256) - 1) {
+                
                     return true;
                 } else {
                     return 'inserire un intero > 0';
@@ -72,10 +82,11 @@ exports.form_materia_prima = function () {
             name: 'CO2',
             type: 'input',
             message: 'Valore CO2: ',
-            validate: function (value) {
+            validate: function (value) 
+                {var reg = /[,.]/
                 var numero = parseInt(value)
                 // errore se l'input non è un numero, è < 0 o maggiore del limite massimo degli uint in solidity
-                if (numero != NaN && numero > 0 && numero < Math.pow(2, 256) - 1) {
+                if (!reg.test(value) && numero != NaN && numero > 0 && numero < Math.pow(2, 256) - 1) {
                     return true;
                 } else {
                     return 'inserire un intero compreso tra 0 e 100 (estremi esclusi)';
@@ -143,6 +154,11 @@ exports.form_prodotto = function (numero_risorse, numero_attivita) {
             type: 'input',
             message: 'Nome nuovo prodotto: ',
             validate: function (value) {
+                var reg = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/
+                if (reg.test(value))
+                {
+                    return 'sono ammesse lettere dalla A alla Z e numeri da 0 a 9'
+                }
                 if (value.length > 0 && value.length < 32) {
                     return true;
                 } else {
@@ -155,10 +171,11 @@ exports.form_prodotto = function (numero_risorse, numero_attivita) {
             name: 'lotto',
             type: 'input',
             message: 'inserire lotto del nuovo prodotto: ',
-            validate: function (value) {
+            validate: function (value) 
+            {var reg = /[,.]/
                 var numero = parseInt(value)
                 // errore se l'input non è un numero, è < 0 o maggiore del limite massimo degli uint in solidity
-                if (numero != NaN && numero > 0 && numero < Math.pow(2, 256) - 1) {
+                if (!reg.test(value) && numero != NaN && numero > 0 && numero < Math.pow(2, 256) - 1) {
                     return true;
                 } else {
                     return 'inserire un intero > 0';
@@ -177,6 +194,11 @@ exports.form_prodotto = function (numero_risorse, numero_attivita) {
             type: 'input',
             message: 'Nome attivita numero_' + i + ": ",
             validate: function (value) {
+                var reg = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/
+                if (reg.test(value))
+                {
+                    return 'sono ammesse lettere dalla A alla Z e numeri da 0 a 9'
+                }
                 if (value.length > 0 && value.length < 32) {
                     return true;
                 } else {
@@ -212,10 +234,11 @@ exports.form_prodotto = function (numero_risorse, numero_attivita) {
             name: 'lotto_risorsa_' + i,
             type: 'input',
             message: 'Lotto materia prima numero_' + i + ": ",
-            validate: function (value) {
+            validate: function (value) 
+            {var reg = /[,.]/
                 var numero = parseInt(value)
                 // errore se l'input non è un numero, è < 0 o maggiore del limite massimo degli uint in solidity
-                if (numero != NaN && numero > 0 && numero < Math.pow(2, 256) - 1) {
+                if (!reg.test(value) && numero != NaN && numero > 0 && numero < Math.pow(2, 256) - 1) {
                     return true;
                 } else {
                     return 'Inserire un numero intero > 0';
@@ -252,10 +275,11 @@ exports.form_by_token = function () {
         name: 'token',
         type: 'input',
         message: 'inserire token del prodotto/materia prima: ',
-        validate: function (value) {
+        validate: function (value) 
+        {var reg = /[,.]/
             var numero = parseInt(value)
             // errore se l'input non è un numero, è < 0 o maggiore del limite massimo degli uint in solidity
-            if (numero != NaN && numero > 0 && numero < Math.pow(2, 256) - 1) {
+            if (!reg.test(value) && numero != NaN && numero > 0 && numero < Math.pow(2, 256) - 1) {
                 return true;
             } else {
                 return 'inserire un intero > 0';
@@ -279,10 +303,11 @@ exports.form_by_lotto = function () {
         name: 'lotto',
         type: 'input',
         message: 'inserire lotto del prodotto/materia prima: ',
-        validate: function (value) {
+        validate: function (value) 
+        {var reg = /[,.]/
             var numero = parseInt(value)
             // errore se l'input non è un numero, è < 0 o maggiore del limite massimo degli uint in solidity
-            if (numero != NaN && numero > 0 && numero < Math.pow(2, 256) - 1) {
+            if (!reg.test(value) && numero != NaN && numero > 0 && numero < Math.pow(2, 256) - 1) {
                 return true;
             } else {
                 return 'inserire un intero > 0';
@@ -308,6 +333,11 @@ exports.form_by_nome = function () {
         type: 'input',
         message: 'Nome materia prima/prodotto: ',
         validate: function (value) {
+            var reg = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/
+                if (reg.test(value))
+                {
+                    return 'sono ammesse lettere dalla A alla Z e numeri da 0 a 9'
+                }
             if (value.length > 0 && value.length < 32) {
                 return true;
             } else {

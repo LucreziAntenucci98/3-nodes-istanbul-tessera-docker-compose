@@ -1,17 +1,16 @@
+const node_modules_path = require("./config").node_modules_path;
+const contracts_path = require("./config").contracts_path;
 class Send {
 
     constructor(nodo_selezionato) {
-        this.path1 = "../build/contracts/";
-        this.path2 = "../node_modules/web3";
-        this.file_contratto = require(this.path1 + "Gestore_nft.json");
-        this.Web3 = require(this.path2);
+        this.file_contratto = require(contracts_path + "Gestore_nft.json");
+        this.Web3 = require(node_modules_path+"web3");
         this.web3 = new this.Web3("http://localhost:2200" + nodo_selezionato);
         this.string = JSON.stringify(this.file_contratto);
         this.objectValue = JSON.parse(this.string);
         this.indirizzo_contratto = this.objectValue['networks']['10']['address'];
         this.abi = this.objectValue['abi'];
     }
-
 
 
     // funzione che riceve l'account richiedente, l'account a cui assegnare il ruolo ed il ruolo stesso

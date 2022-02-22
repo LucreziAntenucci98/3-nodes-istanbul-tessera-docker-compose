@@ -1,10 +1,10 @@
 const Call = require("./call");
 const Send = require("./send");
-var path = "../node_modules/";
-const chalk = require(path + "chalk");
-const boxen = require(path + "boxen");
-const clear = require(path + "clear");
-const figlet = require(path + "figlet");
+const node_modules_path = require("./config").node_modules_path;
+const chalk = require(node_modules_path + "chalk");
+const boxen = require(node_modules_path + "boxen");
+const clear = require(node_modules_path + "clear");
+const figlet = require(node_modules_path + "figlet");
 const form = require("./form")
 
 
@@ -283,5 +283,6 @@ estrazione.ottieniaccounts().then(async function (values) {
 
 
 })
+
 
 

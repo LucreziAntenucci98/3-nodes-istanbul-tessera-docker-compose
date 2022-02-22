@@ -1,10 +1,10 @@
+const node_modules_path = require("./config").node_modules_path;
+const contracts_path = require("./config").contracts_path;
 class Call {
 
     constructor() {
-        this.path1 = "../build/contracts/";
-        this.path2 = "../node_modules/web3";
-        this.file_contratto = require(this.path1 + "Gestore_nft.json");
-        this.Web3 = require(this.path2);
+        this.file_contratto = require(contracts_path + "Gestore_nft.json");
+        this.Web3 = require(node_modules_path+"web3");
         this.string = JSON.stringify(this.file_contratto);
         this.objectValue = JSON.parse(this.string);
         this.indirizzo_contratto = this.objectValue['networks']['10']['address'];
@@ -60,12 +60,6 @@ class Call {
 
 
 
-
-
-
-
-
-
     // riceve il nome ed il richiedente e ritorna la lista di risorse con quel nome
     getInfoByNome(account_richiedente,nome) {
         let web3 = new this.Web3("http://localhost:22000");
@@ -80,34 +74,40 @@ class Call {
                     console.log("Ops, qualcosa è andato storto: " + errore.message);
                 })
                 .then((value) => {
-                    if (value != undefined) {
-                        // la chiamata allo smart contract restituisce un vettore molto lungo in cui sono contenuti gli 
-                        // elementi con il nome scelto, piu degli elementi vuoti 
-                        // perciò ciclo fino a che non arrivo ad avere un elemento vuoto, da li in poi sono tutti vuoti
-                        var altri = true;
-                        var i = 0;
-                        for(i; altri==true; i++) {
-                            try {
-                                //eliminiamo gli elementi vuoti (cioè quelli che hanno [8], exists, = false)
-                                // se l'elemento corrente è vuoto allora mi fermo
-                                if (value[i][8] == false) {
-                                    altri = false;
-                                }
-                                else {
-                                    // se l'elemento corrente non è vuoto (cioè non entro nell'if), allora stampo 
-                                    // il prodotto/materia prima corrente
-                                    console.log("---------------------");
-                                    // chiamo la funzione che formatta i dati restituiti dalla chiamata allo smart contract
-                                    this.stampa_risorsa(value[i])
-                                    console.log("---------------------");
-
-                                };
-                            } catch (error) {
-                                // se c'è un errore termino la stampa delle informazioni
-                                altri = false;
+                    if (value != undefined){
+                        var elem = value.split(";");
+                        for(var j=0;j<elem.length-1;j++){
+                            var att = elem[j].split(",");
+                            console.log("nome -> " + att[0]);
+                            console.log("lotto -> " + att[1]);
+                            console.log("CO2_totale -> " + att[2]);
+                            console.log("token -> " + att[3]);
+                            console.log("tipologia -> " + att[4]);
+                
+                            // nel caso in cui le attivita, i consumi o la lista materie prime siano vuote
+                            // scriviamo che non esitono
+                            if (att[5] == "") {
+                                console.log("lista attivita svolte -> nessuna attivita svolta");
                             }
+                            else {
+                                console.log("lista attivita svolte -> " + att[5]);
+                            }
+                
+                            if (att[6] == "") {
+                                console.log("lista consumi attivita svolte -> nessun consumo disponibile");
+                            }
+                            else {
+                                console.log("lista consumi attivita svolte -> " + att[6]);
+                            }
+                
+                            if (att[7] == "") {
+                                console.log("lotti materie prime utilizzate -> nessuna materia prima utilizzata");
+                            }
+                            else {
+                                console.log("lotti materie prime utilizzate -> " + att[7]);
+                            }
+                        console.log("---------------------------");
                         }
-                        console.log("In totale è stato trovato un numero pari a " + --i + " di materie prime/prodotti");
                     }
                     resolve()
                 });

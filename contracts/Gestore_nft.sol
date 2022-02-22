@@ -50,7 +50,7 @@ contract Gestore_nft is Ownable {
         // errore se l'account inserito compare già nel mapping relativo al ruolo richiesto
         require(
             !esistente(_tipo, _indirizzo_account),
-            "Account gi\u00FE presente con questo ruolo"
+            "Account gia' presente con questo ruolo"
             );
 
         // in base al ruolo passato, l'account viene inserito nel corrispondente mapping
@@ -86,7 +86,7 @@ contract Gestore_nft is Ownable {
         // errore se i valori di CO2 non rispettano le richieste
         require(_valore_CO2>0 && _valore_CO2<100, "Valore di CO2 non valido");
         // errore se il lotto inserito è già presente nel catalogo
-        require(carbonFootprint.getRisorsaByLotto(_lotto).exists==false, "Id lotto gi\u00FE presente");
+        require(carbonFootprint.getRisorsaByLotto(_lotto).exists==false, "Id lotto gia' presente");
         // creo 3 array vuoti, perché al "crea prodotto" devono essere passati anche le riorse usate per produrre la risorsa
         // le attività svolte ed il loro consumo, ma poiché stiamo inserendo una materia prima, tali valori sono nulli
         uint256[] memory vettore_risorse;
@@ -119,7 +119,7 @@ contract Gestore_nft is Ownable {
     ) external {
 
         // errore se il lotto del prodotto da creare esiste già 
-        require(carbonFootprint.getRisorsaByLotto(_lotto_nuovo_prodotto).exists==false, "Il lotto inserito \xc3\xa8 gi\xc3\xa1 presente");
+        require(carbonFootprint.getRisorsaByLotto(_lotto_nuovo_prodotto).exists==false, "Il lotto inserito e' gia' presente");
         // errore se il richiedente non è un trasformatore
         require(esistente("trasformatore", msg.sender), "Solo i trasformatori possono aggiungere un prodotto trasformato");
         // inizializzo la CO2 totale a 0, poi ci sommerò quella delle attività svolte e quella delle materie prime utilizzate
@@ -135,13 +135,13 @@ contract Gestore_nft is Ownable {
             require(risorsa.exists==true, "Materia prima non presente");
 
             // errore se il lotto è 0 
-            require(_lotti_materie_prime[i] != 0, "Il lotto 0 non \xc3\xa8 valido");
+            require(_lotti_materie_prime[i] != 0, "Il lotto 0 non e' valido");
             // trasformo l'uint256 in una stringa in modo da concatenarla nell'errore
             string memory stringa_lotto = Generica.toString(_lotti_materie_prime[i]);
             // errore se il richiedente non possiede la risorsa
             require(getOwnerByToken(risorsa.token)==msg.sender, Generica.concatenate("Non sei in possesso della materia prima con lotto", stringa_lotto));
             // errore se la risorsa non è una materia prima
-            require(Generica.stringCompare(string(risorsa.tipologia),"materia prima"),Generica.concatenate(Generica.concatenate("L'elemento con lotto pari a",stringa_lotto), "non \xc3\xa8 una materia prima"));
+            require(Generica.stringCompare(string(risorsa.tipologia),"materia prima"),Generica.concatenate(Generica.concatenate("L'elemento con lotto pari a",stringa_lotto), "non e' una materia prima"));
 
             // settiamo il valore "tipologia" della risorsa a "utilizzata" in modo che non possa essere usata per 
             // produrre nuovi prodotti
@@ -175,7 +175,7 @@ contract Gestore_nft is Ownable {
     function getOwnerByToken(uint256 _token) public view returns(address){
     
     // errore se il token è 0
-    require(_token!=0, "Il token inserito non \xc3\xa8 valido"); 
+    require(_token!=0, "Il token inserito non e' valido"); 
     
     // errore se il token inserito è maggiore di quello corrente
     require(_token<=carbonFootprint.currentToken(), "Prodotto/materia prima non esistente"); 
@@ -192,7 +192,7 @@ contract Gestore_nft is Ownable {
         public view returns(string memory, uint256, string[] memory, uint32[] memory, uint32, string memory, uint256[] memory, uint256) {
 
         // errore se il token passato è 0 o è maggiore del token corrente 
-        require(_token!=0 && _token<=carbonFootprint.currentToken(), "Il token inserito non \xc3\xa8 valido");
+        require(_token!=0 && _token<=carbonFootprint.currentToken(), "Il token inserito non e' valido");
         
         // estraggo dal catalogo la risorsa con token pari a quello passato
         CarbonFootprint.Risorsa memory risorsa = carbonFootprint.getRisorsaByIdProdotto(_token);
@@ -208,7 +208,7 @@ contract Gestore_nft is Ownable {
         CarbonFootprint.Risorsa memory risorsa = carbonFootprint.getRisorsaByLotto(_lotto);
         
         // errore se il lotto appartiene ad una risorsa che non esiste
-        require(_lotto!=0 && risorsa.exists!=false, "Il lotto inserito non \xc3\xa8 valido");
+        require(_lotto!=0 && risorsa.exists!=false, "Il lotto inserito non e' valido");
         
         return (risorsa.nome, risorsa.lotto, risorsa.nomi_attivita, risorsa.valori_CO2_attivita, risorsa.valore_CO2, risorsa.tipologia, risorsa.lotti_materie_prime, risorsa.token);
     }
@@ -217,26 +217,47 @@ contract Gestore_nft is Ownable {
 
     // funzione che riceve un nome e restituisce una lista di informazioni relative alle risorse con quel nome
     function getInfoByNome(string memory _nome)
-        public view returns(CarbonFootprint.Risorsa[] memory) {
-            
-        // creo un vettore di dimensione pari al numero di risorse prodotte fino ad ora
-        CarbonFootprint.Risorsa[] memory risorse = new CarbonFootprint.Risorsa[](carbonFootprint.currentToken());
-        uint256 trovati=0;
+        public view returns(string memory) {
         
+        uint256 trovati=0;
+        string memory results;
         // scorro tutto il catalogo alla ricerca di risorse con il nome passato
         for (uint256 i=1;i<=carbonFootprint.currentToken();i++) {
             CarbonFootprint.Risorsa memory risorsa_i = carbonFootprint.getRisorsaByIdProdotto(i);
-            // se la risorsa ha nome pari a quello passato allora aggiungo la risorsa al vettore e aggiungo uno a j
             if(Generica.stringCompare(risorsa_i.nome,_nome)) {
-                risorse[trovati] = risorsa_i;
+                results = Generica.concatenate(results,risorsa_i.nome);
+                results = Generica.concatenate(results, ",");
+                results = Generica.concatenate(results,Generica.toString(risorsa_i.lotto));
+                results = Generica.concatenate(results, ",");
+                results = Generica.concatenate(results,Generica.toString(risorsa_i.valore_CO2));
+                results = Generica.concatenate(results, ",");
+                results = Generica.concatenate(results,Generica.toString(risorsa_i.token));
+                results = Generica.concatenate(results, ",");
+                results = Generica.concatenate(results,risorsa_i.tipologia);
+                results = Generica.concatenate(results, ",");
+                for(uint j;j<risorsa_i.nomi_attivita.length;j++){
+                    results = Generica.concatenate(results,risorsa_i.nomi_attivita[j]);
+                    results = Generica.concatenate(results," | ");
+                }
+                results = Generica.concatenate(results, ",");
+                for(uint j;j<risorsa_i.valori_CO2_attivita.length;j++){
+                    results = Generica.concatenate(results,Generica.toString(risorsa_i.valori_CO2_attivita[j]));
+                    results = Generica.concatenate(results, " | ");
+                }
+                results = Generica.concatenate(results, ",");
+                for(uint j;j<risorsa_i.lotti_materie_prime.length;j++){
+                    results = Generica.concatenate(results,Generica.toString(risorsa_i.lotti_materie_prime[j]));
+                    results = Generica.concatenate(results, " | ");
+                }
+                results = Generica.concatenate(results, ";");
                 trovati++;
             }
         }
 
         // errore se nessun prodotto ha il nome passato
-        require(trovati!=0, "Non \xc3\xa8 stato trovato alcun prodotto/materia prima con il nome inserito");
+        require(trovati!=0, "Non e' stato trovato alcun prodotto/materia prima con il nome inserito");
 
-        return risorse;
+        return results;
     }  
 
 
