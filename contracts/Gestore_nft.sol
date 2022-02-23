@@ -98,19 +98,18 @@ contract Gestore_nft is Ownable {
 
     }
 
-
     // consente di trasferire una materia prima ad un altro attore
     function trasferimentoMateriaPrima(
         address _destinatario, uint256 _lotto
         ) external {
         CarbonFootprint.Risorsa memory risorsa = carbonFootprint.getRisorsaByLotto(_lotto);
+        require(risorsa.exists==true,"Il token inserito non corrisponde a nessuna materia prima presente");
         // errore se il richiedente non possiede la risorsa
         require(getOwnerByToken(risorsa.token)==msg.sender, "Non sei in possesso della risorsa");  
         // errore se il destinatario non è un cliente, trasformatore o produttore
-        require(esistente(_destinatario), "L'indirizzo deve appartenere ad un produttore, trasformatore o cliente");
+        require(esistente(_destinatario), "Il destinatario deve essere un produttore, trasformatore o cliente");
         carbonFootprint.transferFrom(msg.sender, _destinatario, risorsa.token);
     }
-
 
     // crea un nuovo prodotto a partire da un vettore di lotti di materie prime, un vettore di nomi di attività svolte
     // un vettore di consumi delle attività svolte, un nome ed un lotto

@@ -112,8 +112,10 @@ exports.form_numero_prodotto = function () {
             type: 'input',
             message: 'Numero di materie prime utilizzate per la produzione: ',
             validate: function (value) {
+                var reg = /[,.]/
                 var numero = parseInt(value)
-                if (numero != NaN && numero > 0 && numero < 5) {
+                    // errore se l'input non è un numero, è < 0 o > di 5
+                if (!reg.test(value) && numero != NaN && numero > 0 && numero < 5) {
                     return true;
                 } else {
                     return 'Inserire un numero di risorse compreso tra 0 e 5 (estremi esclusi)';
@@ -125,9 +127,11 @@ exports.form_numero_prodotto = function () {
             name: 'numero_attivita',
             type: 'input',
             message: 'Numero di attivita svolte per portare a termine la produzione: ',
-            validate: function (value) {
+            validate: function (value){
+                var reg = /[,.]/
                 var numero = parseInt(value)
-                if (numero != NaN && numero > 0 && numero < 5) {
+                // errore se l'input non è un numero, è < 0 o > 5
+                if (!reg.test(value) && numero != NaN && numero > 0 && numero < 5) {
                     return true;
                 } else {
                     return 'Inserire un numero di attivita compreso tra 0 e 5 (estremi esclusi)';
@@ -212,8 +216,10 @@ exports.form_prodotto = function (numero_risorse, numero_attivita) {
             type: 'input',
             message: 'CO2 attivita numero_' + i + ": ",
             validate: function (value) {
-                var numero = parseInt(value)
-                if (numero != NaN && numero > 0 && numero < 100) {
+                var reg = /[,.]/;
+                var numero = parseInt(value);
+                // errore se l'input non è un numero, è < 0 o maggiore del limite massimo degli uint in solidity
+                if (!reg.test(value) && numero != NaN && numero > 0 && numero < 100) {
                     return true;
                 } else {
                     return 'inserire un intero compreso tra 0 e 100 (estremi esclusi)';
@@ -253,14 +259,33 @@ exports.form_prodotto = function (numero_risorse, numero_attivita) {
 
 
 
-
-
-
 ///// TRASFERIMENTO /////
-
-
-
-
+exports.form_trasferimento = function (address,privilegi) {
+    const trasferisci = [
+        {
+            type: 'rawlist',
+            name: "account",
+            message: "Seleziona l'account a cui trasferire la materia prima: ",
+            choices: [address[0] + privilegi[0], address[1] + privilegi[1], address[2] + privilegi[2]],
+        },
+        {
+            type: 'input',
+            name: "lotto_trasferito",
+            message: "Inserire il lotto della materia prima da trasferire: ",
+            validate: function (value){
+                var reg = /[,.]/
+                var numero = parseInt(value)
+                // errore se l'input non è un numero, è < 0 o maggiore del limite massimo degli uint in solidity
+                if (!reg.test(value) && numero != NaN && numero > 0 && numero < Math.pow(2, 256) - 1) {
+                    return true;
+                } else {
+                    return 'inserire un intero > 0';
+                }
+            }
+        }
+    ]
+    return inquirer.prompt(trasferisci);
+}
 
 
 //////////////////////////// FORM ESTRAZIONE ////////////////////////////////
@@ -364,11 +389,11 @@ exports.form_operazione = function () {
         type: 'rawlist',
         name: "attivita",
         message: "Seleziona l'operazione da eseguire: ",
-        pageSize: 12, //mette ordine
+        pageSize: 14, //mette ordine
         choices: [new inquirer.Separator("-----Transazioni-----"), "Inserimento attore", "Inserimento materia prima",
             "Inserimento prodotto", "Trasferimento materia prima", new inquirer.Separator("-----Estrazione dati-----"),
             "Possessore a partire dal token", "Informazioni a partire dal token", "Informazioni a partire dal lotto",
-            "Informazioni a partire dal nome"],
+            "Informazioni a partire dal nome",new inquirer.Separator("-----Altro-----"),"Logout","Esci dal programma"],
         default: "Inserimento attore"
     }
     return inquirer.prompt(lista_operazioni);
@@ -416,9 +441,4 @@ exports.form_continua = function () {
     }
     return inquirer.prompt(continua);
 }
-
-
-
-
-
 

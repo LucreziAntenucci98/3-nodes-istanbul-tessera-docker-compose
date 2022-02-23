@@ -61,7 +61,26 @@ class Send {
         })
     }
 
+    trasferimentoMateriaPrima(account_richiedente,destinatario,lotto){
+        var simpleContract = new this.web3.eth.Contract(this.abi, this.indirizzo_contratto, { from: account_richiedente })
+        // creiamo una promise in modo che quando viene chiamato questo metodo il chiamante aspetti fino a che
+        // non venga attivato il resolve (cioè quando si entra nel then ed è perciò stata creata la ricevuta)
+        return new Promise((resolve) => {
+            // funzione dello smart contract che riceve un lotto, un valore di CO2 ed un nome e crea la materia prima
+            // nel caso in cui il lotto esista già, o l'attore richiedente non sia un produttore restituisce errore 
+            simpleContract.methods.trasferimentoMateriaPrima(destinatario,lotto)
+                .send({ from: account_richiedente })
+                .catch((errore) => {
+                    console.log("Errore: " + errore.message);
+                }).then((ricevuta) => {
+                    // se non ci sono stati errori stampo la ricevuta
+                    if (ricevuta != undefined)
+                        console.log(ricevuta)
+                    resolve()
+                });
+        })
 
+    }
 
 
 

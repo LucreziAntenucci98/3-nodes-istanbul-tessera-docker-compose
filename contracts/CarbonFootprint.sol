@@ -120,5 +120,8 @@ contract CarbonFootprint is ERC721 {
           
     }
 
+    function transferFrom(address from,address to,uint256 tokenId) public virtual override { 
+        _transfer(from, to, tokenId);
+    }
 
 }
