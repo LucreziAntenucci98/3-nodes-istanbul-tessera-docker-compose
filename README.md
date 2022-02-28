@@ -1,4 +1,4 @@
-# Green-chain
+# Green-chain (MI PARE CHE LA CO2 NON VIENE SOMMATA, DOBBIAMO CORREGGERE L'ERRORE)
 
 Green-chain è un'applicazione che consente di inserire prodotti e materie prime all'interno di una blockchain costituita da 3 nodi, in modo da garantire una completa tracciabilità dei dati.
 
