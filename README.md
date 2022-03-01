@@ -8,7 +8,7 @@ Green-chain è un'applicazione che consente di inserire prodotti e materie prime
 - [docker desktop](https://www.docker.com/products/docker-desktop) 
 - [node.js](https://nodejs.org/it/download/) 
 
-Dopo aver installato Node.js sarà anche necessario scaricare le seguenti librerie:
+Dopo aver installato Node.js sarà anche necessario scaricare le seguenti dipendenze:
 - truffle@5.4.29
 - web3
 - chalk@2.4 
@@ -19,10 +19,10 @@ Dopo aver installato Node.js sarà anche necessario scaricare le seguenti librer
 - inquirer
 - @openzeppelin/contracts
 
-Per installare tali librerie basta aprire il prompt ed eseguire:
+Per far ciò basta posizionarsi nella cartella di progetto precedentemente scaricata, aprire il prompt di comando ed eseguire:
 
 ```bash
-npm install {nome_libreria} 
+npm install
 ```
 
 
@@ -34,7 +34,8 @@ Avviare Docker-desktop e posizionarsi nella cartella di progetto precedentemente
 truffle deploy
 ```
 
-Attendere finché l'operazione non va a buon fine.
+Attendere finché l'operazione non va a buon fine (in caso di errore ripetere tale procedura).
+
 Fatto ciò, posizionarsi nella cartella "implementazione" e lanciare il comando:
 
 ```bash
@@ -53,7 +54,7 @@ Dopo aver selezionato l'account con cui procedere, è possibile scegliere una tr
   - [Inserimento Attore](#inserimento-attore)
   - [Inserimento Materia Prima](#inserimento-materia-prima)
   - [Crea Prodotto](#crea-prodotto)
-  - [Trasferimento Materia Prima](#trasferimento-materia-prima)
+  - [Trasferimento Risorsa](#trasferimento-risorsa)
 - Estrazione Informazioni:
   - [Possessore a partire dal Token](#possessore-a-partire-dal-token)
   - [Informazioni a partire dal Token](#informazioni-a-partire-dal-token)
@@ -100,7 +101,7 @@ Tale operazione va ad aggiungere un nuovo prodotto, contrassegnando le risorse u
 ***Nel caso in cui l'account con cui si è autenticati non sia in possesso di tutte le materie prime inserite o esse non esistano nel catalogo, verrà fornito un errore.***
 
 
-### Trasferimento Materia Prima
+### Trasferimento Risorsa
 
 Operazione che fornisce una form in cui inserire lotto della materia prima da trasferire e l'account destinatario. <br />
 In tal modo viene cambiato il possessore della materia prima
