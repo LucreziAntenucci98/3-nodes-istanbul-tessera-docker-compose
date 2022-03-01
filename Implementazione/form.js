@@ -62,12 +62,12 @@ exports.form_materia_prima = function () {
             type: 'input',
             message: 'inserire lotto della materia prima: ',
             validate: function (value) 
-                {var reg = /[,.]/
+                {var reg = /^\d+$/
                 var numero = parseInt(value)
                 
                 // errore se l'input non è un numero, è < 0 o maggiore del limite massimo degli uint in solidity
                 
-                if (!reg.test(value) && numero != NaN && numero > 0 && numero < Math.pow(2, 256) - 1) {
+                if (reg.test(value) && numero != NaN && numero > 0 && numero < Math.pow(2, 256) - 1) {
                 
                     return true;
                 } else {
@@ -83,13 +83,13 @@ exports.form_materia_prima = function () {
             type: 'input',
             message: 'Valore CO2: ',
             validate: function (value) 
-                {var reg = /[,.]/
+                {var reg = /^\d+$/
                 var numero = parseInt(value)
                 // errore se l'input non è un numero, è < 0 o maggiore del limite massimo degli uint in solidity
-                if (!reg.test(value) && numero != NaN && numero > 0 && numero < Math.pow(2, 256) - 1) {
+                if (reg.test(value) && numero != NaN && numero > 0 && numero < Math.pow(2, 32) - 1) {
                     return true;
                 } else {
-                    return 'inserire un intero compreso tra 0 e 100 (estremi esclusi)';
+                    return 'inserire un intero positivo a 32 bit';
                 }
             }
         }
@@ -112,10 +112,10 @@ exports.form_numero_prodotto = function () {
             type: 'input',
             message: 'Numero di materie prime utilizzate per la produzione: ',
             validate: function (value) {
-                var reg = /[,.]/
+                var reg = /^\d+$/
                 var numero = parseInt(value)
                     // errore se l'input non è un numero, è < 0 o > di 5
-                if (!reg.test(value) && numero != NaN && numero > 0 && numero < 5) {
+                if (reg.test(value) && numero != NaN && numero > 0 && numero < 5) {
                     return true;
                 } else {
                     return 'Inserire un numero di risorse compreso tra 0 e 5 (estremi esclusi)';
@@ -128,10 +128,10 @@ exports.form_numero_prodotto = function () {
             type: 'input',
             message: 'Numero di attivita svolte per portare a termine la produzione: ',
             validate: function (value){
-                var reg = /[,.]/
+                var reg = /^\d+$/
                 var numero = parseInt(value)
                 // errore se l'input non è un numero, è < 0 o > 5
-                if (!reg.test(value) && numero != NaN && numero > 0 && numero < 5) {
+                if (reg.test(value) && numero != NaN && numero > 0 && numero < 5) {
                     return true;
                 } else {
                     return 'Inserire un numero di attivita compreso tra 0 e 5 (estremi esclusi)';
@@ -176,10 +176,10 @@ exports.form_prodotto = function (numero_risorse, numero_attivita) {
             type: 'input',
             message: 'inserire lotto del nuovo prodotto: ',
             validate: function (value) 
-            {var reg = /[,.]/
+            {var reg = /^\d+$/
                 var numero = parseInt(value)
                 // errore se l'input non è un numero, è < 0 o maggiore del limite massimo degli uint in solidity
-                if (!reg.test(value) && numero != NaN && numero > 0 && numero < Math.pow(2, 256) - 1) {
+                if (reg.test(value) && numero != NaN && numero > 0 && numero < Math.pow(2, 256) - 1) {
                     return true;
                 } else {
                     return 'inserire un intero > 0';
@@ -216,13 +216,13 @@ exports.form_prodotto = function (numero_risorse, numero_attivita) {
             type: 'input',
             message: 'CO2 attivita numero_' + i + ": ",
             validate: function (value) {
-                var reg = /[,.]/;
+                var reg = /^\d+$/
                 var numero = parseInt(value);
                 // errore se l'input non è un numero, è < 0 o maggiore del limite massimo degli uint in solidity
-                if (!reg.test(value) && numero != NaN && numero > 0 && numero < 100) {
+                if (reg.test(value) && numero != NaN && numero > 0 && numero < Math.pow(2, 32) - 1) {
                     return true;
                 } else {
-                    return 'inserire un intero compreso tra 0 e 100 (estremi esclusi)';
+                    return 'inserire un intero positivo a 32 bit';
                 }
             }
         }];
@@ -241,10 +241,10 @@ exports.form_prodotto = function (numero_risorse, numero_attivita) {
             type: 'input',
             message: 'Lotto materia prima numero_' + i + ": ",
             validate: function (value) 
-            {var reg = /[,.]/
+            {var reg = /^\d+$/
                 var numero = parseInt(value)
                 // errore se l'input non è un numero, è < 0 o maggiore del limite massimo degli uint in solidity
-                if (!reg.test(value) && numero != NaN && numero > 0 && numero < Math.pow(2, 256) - 1) {
+                if (reg.test(value) && numero != NaN && numero > 0 && numero < Math.pow(2, 256) - 1) {
                     return true;
                 } else {
                     return 'Inserire un numero intero > 0';
@@ -273,10 +273,10 @@ exports.form_trasferimento = function (address,privilegi) {
             name: "lotto_trasferito",
             message: "Inserire il lotto della materia prima da trasferire: ",
             validate: function (value){
-                var reg = /[,.]/
+                var reg = /^\d+$/
                 var numero = parseInt(value)
                 // errore se l'input non è un numero, è < 0 o maggiore del limite massimo degli uint in solidity
-                if (!reg.test(value) && numero != NaN && numero > 0 && numero < Math.pow(2, 256) - 1) {
+                if (reg.test(value) && numero != NaN && numero > 0 && numero < Math.pow(2, 256) - 1) {
                     return true;
                 } else {
                     return 'inserire un intero > 0';
@@ -301,10 +301,10 @@ exports.form_by_token = function () {
         type: 'input',
         message: 'inserire token del prodotto/materia prima: ',
         validate: function (value) 
-        {var reg = /[,.]/
+        {var reg = /^\d+$/
             var numero = parseInt(value)
             // errore se l'input non è un numero, è < 0 o maggiore del limite massimo degli uint in solidity
-            if (!reg.test(value) && numero != NaN && numero > 0 && numero < Math.pow(2, 256) - 1) {
+            if (reg.test(value) && numero != NaN && numero > 0 && numero < Math.pow(2, 256) - 1) {
                 return true;
             } else {
                 return 'inserire un intero > 0';
@@ -329,10 +329,10 @@ exports.form_by_lotto = function () {
         type: 'input',
         message: 'inserire lotto del prodotto/materia prima: ',
         validate: function (value) 
-        {var reg = /[,.]/
+        {var reg = /^\d+$/
             var numero = parseInt(value)
             // errore se l'input non è un numero, è < 0 o maggiore del limite massimo degli uint in solidity
-            if (!reg.test(value) && numero != NaN && numero > 0 && numero < Math.pow(2, 256) - 1) {
+            if (reg.test(value) && numero != NaN && numero > 0 && numero < Math.pow(2, 256) - 1) {
                 return true;
             } else {
                 return 'inserire un intero > 0';
@@ -391,7 +391,7 @@ exports.form_operazione = function () {
         message: "Seleziona l'operazione da eseguire: ",
         pageSize: 14, //mette ordine
         choices: [new inquirer.Separator("-----Transazioni-----"), "Inserimento attore", "Inserimento materia prima",
-            "Inserimento prodotto", "Trasferimento materia prima", new inquirer.Separator("-----Estrazione dati-----"),
+            "Inserimento prodotto", "Trasferimento risorsa", new inquirer.Separator("-----Estrazione dati-----"),
             "Possessore a partire dal token", "Informazioni a partire dal token", "Informazioni a partire dal lotto",
             "Informazioni a partire dal nome",new inquirer.Separator("-----Altro-----"),"Logout","Esci dal programma"],
         default: "Inserimento attore"

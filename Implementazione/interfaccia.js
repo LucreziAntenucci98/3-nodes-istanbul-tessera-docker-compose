@@ -162,7 +162,7 @@ function loop(privilegi,attori,transazioni,indirizzo_richiedente,nodo) {
                 })
                 break
 
-            case "Trasferimento materia prima":
+            case "Trasferimento risorsa":
                 privilegi = await getPrivilegiAttori(attori);
                 if (!checkPrivilegi("produttore",privilegi[nodo]) && !checkPrivilegi("trasformatore",privilegi[nodo]) && !checkPrivilegi("cliente",privilegi[nodo])){
                     console.log("Non sei autorizzato a svolgere l'operazione")
@@ -176,7 +176,7 @@ function loop(privilegi,attori,transazioni,indirizzo_richiedente,nodo) {
                 privilegi = await getPrivilegiAttori(attori);
                 form.form_trasferimento(attori, privilegi).then(async function (dati_traferimento) {
                     var destinatario = dati_traferimento['account'].substring(0, dati_traferimento['account'].indexOf(' '));
-                    await transazioni.trasferimentoMateriaPrima(indirizzo_richiedente, destinatario, dati_traferimento['lotto_trasferito']);
+                    await transazioni.trasferimentoRisorsa(indirizzo_richiedente, destinatario, dati_traferimento['lotto_trasferito']);
                     form.form_continua().then((value) => {
                         continua(value.continua)
                     })

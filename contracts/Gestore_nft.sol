@@ -1,17 +1,15 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity>=0.5.16;
+pragma solidity ^0.8.0;
 
 import "./CarbonFootprint.sol";
 import "./Generica.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
 
 
 contract Gestore_nft is Ownable {
 
-    using SafeMath for uint32;
 
 
 
@@ -83,8 +81,6 @@ contract Gestore_nft is Ownable {
         require(esistente("produttore", msg.sender), "Solo i produttori possono aggiungere materie prime");
         // errore se il lotto inserito è 0
         require(_lotto != 0, "Id lotto non valido");
-        // errore se i valori di CO2 non rispettano le richieste
-        require(_valore_CO2>0 && _valore_CO2<100, "Valore di CO2 non valido");
         // errore se il lotto inserito è già presente nel catalogo
         require(carbonFootprint.getRisorsaByLotto(_lotto).exists==false, "Id lotto gia' presente");
         // creo 3 array vuoti, perché al "crea prodotto" devono essere passati anche le riorse usate per produrre la risorsa
@@ -99,11 +95,18 @@ contract Gestore_nft is Ownable {
     }
 
     // consente di trasferire una materia prima ad un altro attore
-    function trasferimentoMateriaPrima(
+    function trasferimentoRisorsa(
         address _destinatario, uint256 _lotto
         ) external {
+        
+        // errore se il destinatario è colui che richiede la transazione
+        require(_destinatario!=msg.sender, "Il destinatario ed il richiedente non possono coincidere");
+
         CarbonFootprint.Risorsa memory risorsa = carbonFootprint.getRisorsaByLotto(_lotto);
-        require(risorsa.exists==true,"Il token inserito non corrisponde a nessuna materia prima presente");
+        // errore se il lotto non appartiene a nessuna risorsa del catalogo
+        require(risorsa.exists==true,"Il token inserito non corrisponde a risorsa prima presente");
+        // errore se la risorsa è stata utilizzata
+        require(!Generica.stringCompare(string(risorsa.tipologia),"utilizzata"),"Il token inserito non corrisponde ad una risorsa/prodotto trasformato");
         // errore se il richiedente non possiede la risorsa
         require(getOwnerByToken(risorsa.token)==msg.sender, "Non sei in possesso della risorsa");  
         // errore se il destinatario non è un cliente, trasformatore o produttore
@@ -116,6 +119,10 @@ contract Gestore_nft is Ownable {
     function creaProdotto(
         string[] memory _nomi_attivita, uint32[] memory _valori_CO2_attivita, string memory _nome, uint256[] memory _lotti_materie_prime, uint256 _lotto_nuovo_prodotto
     ) external {
+
+        
+        // errore se i vettori non rispettano le dimensioni richieste
+        require(_nomi_attivita.length < 5 && _valori_CO2_attivita.length < 5 && _lotti_materie_prime.length < 5 && _nomi_attivita.length  == _valori_CO2_attivita.length, "Errore nell'inserimento del numero di materie prime o di attivita'");
 
         // errore se il lotto del prodotto da creare esiste già 
         require(carbonFootprint.getRisorsaByLotto(_lotto_nuovo_prodotto).exists==false, "Il lotto inserito e' gia' presente");
@@ -147,7 +154,10 @@ contract Gestore_nft is Ownable {
             carbonFootprint.setTipologiaUtilizzato(_lotti_materie_prime[i]);
 
             // sommo alla CO2 totale quella della materia prima corrente
-            CO2_totale.add(risorsa.valore_CO2);
+            unchecked {
+         CO2_totale += risorsa.valore_CO2;
+        require(CO2_totale>=risorsa.valore_CO2, "Si e' verificato un errore di overflow");
+        }
             
         }
         
@@ -156,7 +166,10 @@ contract Gestore_nft is Ownable {
         for (uint i=0;i<_valori_CO2_attivita.length;i++) {  
 
             // sommo i contributi delle singole attivita
-            CO2_totale.add(_valori_CO2_attivita[i]);
+            unchecked {
+            CO2_totale += _valori_CO2_attivita[i];
+            require(CO2_totale>=_valori_CO2_attivita[i], "Si e' verificato un errore di overflow");
+        }
            }
             
         // creo il prodotto passando id del lotto, CO2 totale, vettore con i nomi delle attività svolte, vettore con i 

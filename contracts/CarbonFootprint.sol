@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity>=0.5.16;
+pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
@@ -68,7 +68,7 @@ contract CarbonFootprint is ERC721 {
         risorsaByLotto[_lotto] = risorsa;
         risorsaByToken_prodotto[id_nuovo_prodotto] = risorsa;
         // assegno la risorsa al possessore
-        _mint(_possessore, id_nuovo_prodotto);
+        _safeMint(_possessore, id_nuovo_prodotto);
 
         return id_nuovo_prodotto;
     }
@@ -121,7 +121,7 @@ contract CarbonFootprint is ERC721 {
     }
 
     function transferFrom(address from,address to,uint256 tokenId) public virtual override { 
-        _transfer(from, to, tokenId);
+        _safeTransfer(from, to, tokenId, "");
     }
 
 }
