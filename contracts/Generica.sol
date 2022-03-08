@@ -14,7 +14,7 @@ library Generica {
     }
 
 
-
+    // funzione per trasformare un uint256 in una stringa
     function toString(uint256 value) internal pure returns (string memory) {
         
         if (value == 0) {
@@ -35,7 +35,7 @@ library Generica {
         return string(buffer);
     }
 
-
+    // funzione che concatena due stringhe
     function concatenate(string memory a,string memory b) public pure returns (string memory){
         return string(abi.encodePacked(a,b));
     } 

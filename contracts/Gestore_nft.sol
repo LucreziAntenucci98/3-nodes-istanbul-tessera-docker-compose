@@ -103,10 +103,9 @@ contract Gestore_nft is Ownable {
         require(_destinatario!=msg.sender, "Il destinatario ed il richiedente non possono coincidere");
 
         CarbonFootprint.Risorsa memory risorsa = carbonFootprint.getRisorsaByLotto(_lotto);
-        // errore se il lotto non appartiene a nessuna risorsa del catalogo
-        require(risorsa.exists==true,"Il token inserito non corrisponde a risorsa prima presente");
-        // errore se la risorsa è stata utilizzata
-        require(!Generica.stringCompare(string(risorsa.tipologia),"utilizzata"),"Il token inserito non corrisponde ad una risorsa/prodotto trasformato");
+
+        // errore se la risorsa non esiste nel catalogo o se è stata utilizzata 
+        require(risorsa.exists==true && !Generica.stringCompare(string(risorsa.tipologia),"utilizzata"),"Il lotto inserito non corrisponde ad una risorsa del catalogo");
         // errore se il richiedente non possiede la risorsa
         require(getOwnerByToken(risorsa.token)==msg.sender, "Non sei in possesso della risorsa");  
         // errore se il destinatario non è un cliente, trasformatore o produttore
@@ -147,7 +146,7 @@ contract Gestore_nft is Ownable {
             // errore se il richiedente non possiede la risorsa
             require(getOwnerByToken(risorsa.token)==msg.sender, Generica.concatenate("Non sei in possesso della materia prima con lotto", stringa_lotto));
             // errore se la risorsa non è una materia prima
-            require(Generica.stringCompare(string(risorsa.tipologia),"materia prima"),Generica.concatenate(Generica.concatenate("L'elemento con lotto pari a",stringa_lotto), "non e' una materia prima"));
+            require(Generica.stringCompare(string(risorsa.tipologia),"materia prima"),Generica.concatenate(Generica.concatenate("L'elemento con lotto pari a ",stringa_lotto), " non e' una materia prima"));
 
             // settiamo il valore "tipologia" della risorsa a "utilizzata" in modo che non possa essere usata per 
             // produrre nuovi prodotti

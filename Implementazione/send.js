@@ -28,7 +28,7 @@ class Send {
                     console.log("Errore: " + errore.message);
                 }).then((ricevuta) => {
                     if (ricevuta != undefined)
-                        console.log(ricevuta)
+                        console.log("Operazione andata a buon fine")
                     resolve()
                 });
         })
@@ -55,7 +55,7 @@ class Send {
                 }).then((ricevuta) => {
                     // se non ci sono stati errori stampo la ricevuta
                     if (ricevuta != undefined)
-                        console.log(ricevuta)
+                        console.log("Operazione andata a buon fine")
                     resolve()
                 });
         })
@@ -75,7 +75,7 @@ class Send {
                 }).then((ricevuta) => {
                     // se non ci sono stati errori stampo la ricevuta
                     if (ricevuta != undefined)
-                        console.log(ricevuta)
+                        console.log("Operazione andata a buon fine")
                     resolve()
                 });
         })
@@ -103,7 +103,7 @@ class Send {
                 }).then((ricevuta) => {
                     // se non ci sono stati errori stampo la ricevuta
                     if (ricevuta != undefined)
-                        console.log(ricevuta)
+                        console.log("Operazione andata a buon fine")
                     resolve()
                 });
         })
