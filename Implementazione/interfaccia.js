@@ -9,7 +9,7 @@ const form = require("./form")
 
 /////////////////////////////
 
-//Messaggio di benvenuto
+//Mostra il messaggio di benvenuto
 function startInterface(){
 clear(); //pulisce la schermata 
 console.log(
@@ -30,7 +30,7 @@ console.log(msgBox);
 console.log();
 console.log();
 }
-// estraggo i privilegi dei vari attori
+// estrazione dei vari privilegi degli attori
 async function getPrivilegiAttori(attori) {
     var privilegi = [" (amministratore) ", " ", " "];
     for (var i = 0; i < 3; i++) {
@@ -46,7 +46,7 @@ async function getPrivilegiAttori(attori) {
     }
     return privilegi;
 }
-//controllo i privilegi per l'account
+//controllo dei privilegi dell'account
 function checkPrivilegi(ruolo,privilegi){
     var ruoli = privilegi.split(" ");
     for(var i=0;i<ruoli.length;i++)
@@ -54,7 +54,7 @@ function checkPrivilegi(ruolo,privilegi){
         return true;
     return false;
 }
-//
+//cosente all'attore di scegliere se continuare o meno a svolgere operazioni
 function loop(privilegi,attori,transazioni,indirizzo_richiedente,nodo) {
     // funzione che chiederà all'utente se vuole continuare la sessione con l'account corrente o se vuole terminare il programma
     function continua(risposta) {
