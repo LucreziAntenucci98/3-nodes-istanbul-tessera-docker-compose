@@ -31,6 +31,10 @@ npm install
 Avviare Docker-desktop e posizionarsi nella cartella di progetto precedentemente scaricata, aprire il prompt di comando ed eseguire:
 
 ```bash
+start.cmd
+```
+
+```bash
 truffle deploy
 ```
 
