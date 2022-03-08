@@ -428,7 +428,7 @@ exports.form_account = function (address, privilegi) {
 
 ///// CONTINUA /////
 
-// form in cui inserire \textit{Y} o \textit{N} scegliendo 
+// form in cui inserire {Y} o {N} scegliendo 
 //se continuare ad eseguire operazioni con l'account corrente 
 //o in alternativa terminare il programma.
 exports.form_continua = function () {
