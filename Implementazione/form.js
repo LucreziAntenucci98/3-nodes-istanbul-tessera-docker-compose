@@ -8,7 +8,7 @@ const inquirer = require(node_modules_path + "inquirer");
 
 ///// ATTORE /////
 
-//form in cui scegliere quale attore selezionare e quale ruolo assegnargli 
+//form in cui scegliere un attore tra quelli disponibili ed un ruolo tra quelli assegnabili 
 exports.form_inserimento_attore = function (address, privilegi) {
     console.log(address[0])
 
@@ -104,7 +104,7 @@ exports.form_materia_prima = function () {
 
 ///// PRODOTTO PRELIMINARE /////
 
-// form preliminare per l'inserimento dei prodotti in cui scegliere quanti materie prime ed attività inserire
+// form preliminare all'inserimento dei prodotti; consente l'inserimento del numero di materie prime ed attivita' relative ad un prodotto
 exports.form_numero_prodotto = function () {
     const numero_prodotto = [
         {
@@ -148,8 +148,9 @@ exports.form_numero_prodotto = function () {
 
 ///// PRODOTTO /////
 
-// form in cui inserire i lotti delle materie prime utilizzate, le attivita svolte ed il loro consumo,
-// il nome del nuovo prodotto ed il lotto del nuovo prodotto
+// form in cui inserire il nome e il lotto del nuovo prodotto, 
+//i lotti delle materie prime utilizzate, le attivita' svolte durante 
+//la trasformazione del prodotto ed il loro consumo
 exports.form_prodotto = function (numero_risorse, numero_attivita) {
 
     var input_prodotto = [
@@ -260,6 +261,8 @@ exports.form_prodotto = function (numero_risorse, numero_attivita) {
 
 
 ///// TRASFERIMENTO /////
+
+// form in cui inserire la risorsa da trasferire e l'account del ricevitore;
 exports.form_trasferimento = function (address,privilegi) {
     const trasferisci = [
         {
@@ -293,7 +296,7 @@ exports.form_trasferimento = function (address,privilegi) {
 
 ///// BY TOKEN /////
 
-// form in cui inserire il token di una materia prima/prodotto
+// form in cui inserire il token relativo ad una risorsa
 exports.form_by_token = function () {
     const by_token =
     {
@@ -321,7 +324,8 @@ exports.form_by_token = function () {
 
 ///// BY LOTTO /////
 
-// form in cui inserire il lotto del prodotto/materia prima
+// form in cui inserire il lotto relativo ad una risorsa
+
 exports.form_by_lotto = function () {
     const by_lotto =  //tutte le estrazione delle informazioni a partire dal lotto del proddotto
     {
@@ -350,7 +354,7 @@ exports.form_by_lotto = function () {
 
 ///// BY NOME /////
 
-// form in cui inserire il nome della materia prima/prodotto
+// form in cui inserire il nome di una risorsa
 exports.form_by_nome = function () {
     const by_nome =
     {
@@ -383,7 +387,7 @@ exports.form_by_nome = function () {
 
 ///// OPERAZIONI /////
 
-// form in cui scegliere quale operazione si vuole portare a termine
+//form che consente di scegliere l'operazione da effettuare
 exports.form_operazione = function () {
     const lista_operazioni = {
         type: 'rawlist',
@@ -406,7 +410,7 @@ exports.form_operazione = function () {
 
 ///// ACCOUNT /////
 
-// form in cui scegliere con quale account "autenticarsi"
+// form che consente la scelta di un account con cui autenticarsi
 exports.form_account = function (address, privilegi) {
     const account = {
         type: 'rawlist',
@@ -424,7 +428,9 @@ exports.form_account = function (address, privilegi) {
 
 ///// CONTINUA /////
 
-//form in cui scegliere se continuare a fare operazioni con l'account corrente o se uscire dalla sessione
+// form in cui inserire \textit{Y} o \textit{N} scegliendo 
+//se continuare ad eseguire operazioni con l'account corrente 
+//o in alternativa terminare il programma.
 exports.form_continua = function () {
     const continua =
     {
