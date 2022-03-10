@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity ^0.8.0;
+pragma solidity 0.8.3;
+//pragma experimental SMTChecker;
 
 import "./CarbonFootprint.sol";
 import "./Generica.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
-
+import "../node_modules/@openzeppelin/contracts/access/Ownable.sol";
 
 
 contract Gestore_nft is Ownable {
@@ -16,20 +16,16 @@ contract Gestore_nft is Ownable {
 
 
     // mapping attraverso i quali posso ricavare i produttori, trasformatori e clienti
-    mapping(uint256=>address) public produttori;
-    mapping(uint256=>address) public trasformatori;
-    mapping(uint256=>address) public clienti;
-    uint256 numero_produttori = 0;
-    uint256 numero_trasformatori = 0;
-    uint256 numero_clienti = 0;
+    mapping(uint256=>address) private produttori;
+    mapping(uint256=>address) private trasformatori;
+    mapping(uint256=>address) private clienti;
+    uint256 private numero_produttori = 0;
+    uint256 private numero_trasformatori = 0;
+    uint256 private numero_clienti = 0;
 
 
     // creo l'oggetto che rappresenta il token non fungibile
-    CarbonFootprint carbonFootprint = new CarbonFootprint();
-
-
-    
-
+    CarbonFootprint private carbonFootprint = new CarbonFootprint();
 
     //funzione con cui il creatore dello smartContract può aggiungere un nuovo produttore, trasformatore o cliente
     function aggiungiAttore(
@@ -52,25 +48,30 @@ contract Gestore_nft is Ownable {
             );
 
         // in base al ruolo passato, l'account viene inserito nel corrispondente mapping
-        if(Generica.stringCompare(_tipo, "produttore")) {
+        if (Generica.stringCompare(_tipo, "produttore")) {
             produttori[numero_produttori] = _indirizzo_account;
-            numero_produttori++;
-        }
-
-        else if(Generica.stringCompare(_tipo, "trasformatore")) {
+            unchecked 
+            {
+                numero_produttori++;
+                require(numero_produttori>0,"Raggiunto il numero massimo di produttori");
+            }
+        } else if (Generica.stringCompare(_tipo, "trasformatore")) {
             trasformatori[numero_trasformatori] = _indirizzo_account;
+            unchecked
+            {
+                numero_trasformatori++;
+                require(numero_trasformatori>0,"Raggiunto il numero massimo di trasformatori");
+            }
             numero_trasformatori++;
-        }
-
-        else if(Generica.stringCompare(_tipo, "cliente")) {
+        } else if (Generica.stringCompare(_tipo, "cliente")) {
             clienti[numero_clienti] = _indirizzo_account;
-            numero_clienti++;
+            unchecked
+            {
+                numero_clienti++;
+                require(numero_clienti>0,"Raggiunto il numero massimo di clienti");
+            }
         }
     }
-
-
-
-
 
     //crea una materia prima a partire da noe, valore di CO2 e lotto
     function creaMateriaPrima(
@@ -100,14 +101,14 @@ contract Gestore_nft is Ownable {
         ) external {
         
         // errore se il destinatario è colui che richiede la transazione
-        require(_destinatario!=msg.sender, "Il destinatario ed il richiedente non possono coincidere");
+        require(_destinatario != msg.sender, "Il destinatario ed il richiedente non possono coincidere");
 
         CarbonFootprint.Risorsa memory risorsa = carbonFootprint.getRisorsaByLotto(_lotto);
 
         // errore se la risorsa non esiste nel catalogo o se è stata utilizzata 
-        require(risorsa.exists==true && !Generica.stringCompare(string(risorsa.tipologia),"utilizzata"),"Il lotto inserito non corrisponde ad una risorsa del catalogo");
+        require(risorsa.exists == true && !Generica.stringCompare(string(risorsa.tipologia), "utilizzata"), "Il lotto inserito non corrisponde ad una risorsa del catalogo");
         // errore se il richiedente non possiede la risorsa
-        require(getOwnerByToken(risorsa.token)==msg.sender, "Non sei in possesso della risorsa");  
+        require(getOwnerByToken(risorsa.token) == msg.sender, "Non sei in possesso della risorsa");  
         // errore se il destinatario non è un cliente, trasformatore o produttore
         require(esistente(_destinatario), "Il destinatario deve essere un produttore, trasformatore o cliente");
         carbonFootprint.transferFrom(msg.sender, _destinatario, risorsa.token);
@@ -119,57 +120,57 @@ contract Gestore_nft is Ownable {
         string[] memory _nomi_attivita, uint32[] memory _valori_CO2_attivita, string memory _nome, uint256[] memory _lotti_materie_prime, uint256 _lotto_nuovo_prodotto
     ) external {
 
-        
         // errore se i vettori non rispettano le dimensioni richieste
-        require(_nomi_attivita.length < 5 && _valori_CO2_attivita.length < 5 && _lotti_materie_prime.length < 5 && _nomi_attivita.length  == _valori_CO2_attivita.length, "Errore nell'inserimento del numero di materie prime o di attivita'");
-
+        require(_nomi_attivita.length < 5 && _valori_CO2_attivita.length < 5 && _lotti_materie_prime.length < 5 && _nomi_attivita.length == _valori_CO2_attivita.length, "Errore nell'inserimento del numero di materie prime o di attivita'");
         // errore se il lotto del prodotto da creare esiste già 
-        require(carbonFootprint.getRisorsaByLotto(_lotto_nuovo_prodotto).exists==false, "Il lotto inserito e' gia' presente");
+        require(carbonFootprint.getRisorsaByLotto(_lotto_nuovo_prodotto).exists == false, "Il lotto inserito e' gia' presente");
         // errore se il richiedente non è un trasformatore
         require(esistente("trasformatore", msg.sender), "Solo i trasformatori possono aggiungere un prodotto trasformato");
         // inizializzo la CO2 totale a 0, poi ci sommerò quella delle attività svolte e quella delle materie prime utilizzate
         uint32 CO2_totale = 0; 
 
         // per ogni materia prima controllo se è valida ed utilizzabile, poi sommo i corrispondenti contributi in CO2
-        for (uint i=0;i<_lotti_materie_prime.length;i++) {
+        for (uint i=0; i < _lotti_materie_prime.length; i++) {
 
             // estraggo la risorsa dal catalogo conoscendone il lotto
             CarbonFootprint.Risorsa memory risorsa = carbonFootprint.getRisorsaByLotto(_lotti_materie_prime[i]);
        
             // errore se la materia prima non esiste
-            require(risorsa.exists==true, "Materia prima non presente");
+            require(risorsa.exists == true, "Materia prima non presente");
 
             // errore se il lotto è 0 
             require(_lotti_materie_prime[i] != 0, "Il lotto 0 non e' valido");
             // trasformo l'uint256 in una stringa in modo da concatenarla nell'errore
             string memory stringa_lotto = Generica.toString(_lotti_materie_prime[i]);
             // errore se il richiedente non possiede la risorsa
-            require(getOwnerByToken(risorsa.token)==msg.sender, Generica.concatenate("Non sei in possesso della materia prima con lotto", stringa_lotto));
+            require(getOwnerByToken(risorsa.token) == msg.sender, Generica.concatenate("Non sei in possesso della materia prima con lotto", stringa_lotto));
             // errore se la risorsa non è una materia prima
-            require(Generica.stringCompare(string(risorsa.tipologia),"materia prima"),Generica.concatenate(Generica.concatenate("L'elemento con lotto pari a ",stringa_lotto), " non e' una materia prima"));
+            require(Generica.stringCompare(string(risorsa.tipologia), "materia prima"), Generica.concatenate(Generica.concatenate("L'elemento con lotto pari a ", stringa_lotto), " non e' una materia prima"));
 
             // settiamo il valore "tipologia" della risorsa a "utilizzata" in modo che non possa essere usata per 
             // produrre nuovi prodotti
             carbonFootprint.setTipologiaUtilizzato(_lotti_materie_prime[i]);
 
             // sommo alla CO2 totale quella della materia prima corrente
-            unchecked {
-         CO2_totale += risorsa.valore_CO2;
-        require(CO2_totale>=risorsa.valore_CO2, "Si e' verificato un errore di overflow");
-        }
+            unchecked 
+            {
+                CO2_totale += risorsa.valore_CO2;
+                require(CO2_totale >= risorsa.valore_CO2, "Si e' verificato un errore di overflow");
+            }
             
         }
         
 
         // per ogni attività sommo i consumi di CO2 al valore di CO2 totale
-        for (uint i=0;i<_valori_CO2_attivita.length;i++) {  
+        for (uint i=0; i < _valori_CO2_attivita.length; i++) {  
 
             // sommo i contributi delle singole attivita
-            unchecked {
-            CO2_totale += _valori_CO2_attivita[i];
-            require(CO2_totale>=_valori_CO2_attivita[i], "Si e' verificato un errore di overflow");
+            unchecked 
+            {
+                CO2_totale += _valori_CO2_attivita[i];
+                require(CO2_totale >= _valori_CO2_attivita[i], "Si e' verificato un errore di overflow");
+            }
         }
-           }
             
         // creo il prodotto passando id del lotto, CO2 totale, vettore con i nomi delle attività svolte, vettore con i 
         // consumi delle attività svolte, tipologia (prodotto trasformato), possessore (chi ha mandato il messaggio),
@@ -178,18 +179,14 @@ contract Gestore_nft is Ownable {
 
     }
     
-
-
-
-
     // funzione che riceve un token e restituisce l'indirizzo del possessore
-    function getOwnerByToken(uint256 _token) public view returns(address){
-    
+    function getOwnerByToken(uint256 _token) public view returns(address) {
+
     // errore se il token è 0
-    require(_token!=0, "Il token inserito non e' valido"); 
+    require(_token != 0, "Il token inserito non e' valido"); 
     
     // errore se il token inserito è maggiore di quello corrente
-    require(_token<=carbonFootprint.currentToken(), "Prodotto/materia prima non esistente"); 
+    require(_token <= carbonFootprint.currentToken(), "Prodotto/materia prima non esistente"); 
     
     return carbonFootprint.ownerOf(_token);
     }
@@ -203,14 +200,13 @@ contract Gestore_nft is Ownable {
         public view returns(string memory, uint256, string[] memory, uint32[] memory, uint32, string memory, uint256[] memory, uint256) {
 
         // errore se il token passato è 0 o è maggiore del token corrente 
-        require(_token!=0 && _token<=carbonFootprint.currentToken(), "Il token inserito non e' valido");
+        require(_token != 0 && _token <= carbonFootprint.currentToken(), "Il token inserito non e' valido");
         
         // estraggo dal catalogo la risorsa con token pari a quello passato
         CarbonFootprint.Risorsa memory risorsa = carbonFootprint.getRisorsaByIdProdotto(_token);
         
-        return (risorsa.nome, risorsa.lotto, risorsa.nomi_attivita, risorsa.valori_CO2_attivita, risorsa.valore_CO2, risorsa.tipologia, risorsa.lotti_materie_prime, risorsa.token);
+        return(risorsa.nome, risorsa.lotto, risorsa.nomi_attivita, risorsa.valori_CO2_attivita, risorsa.valore_CO2, risorsa.tipologia, risorsa.lotti_materie_prime, risorsa.token);
     }
-
 
     // funzione che riceve un lotto e restituisce le informazioni relative alla risorsa con quel lotto
     function getInfoByLotto(uint256 _lotto)
@@ -219,9 +215,9 @@ contract Gestore_nft is Ownable {
         CarbonFootprint.Risorsa memory risorsa = carbonFootprint.getRisorsaByLotto(_lotto);
         
         // errore se il lotto appartiene ad una risorsa che non esiste
-        require(_lotto!=0 && risorsa.exists!=false, "Il lotto inserito non e' valido");
+        require(_lotto !=0 && risorsa.exists != false, "Il lotto inserito non e' valido");
         
-        return (risorsa.nome, risorsa.lotto, risorsa.nomi_attivita, risorsa.valori_CO2_attivita, risorsa.valore_CO2, risorsa.tipologia, risorsa.lotti_materie_prime, risorsa.token);
+        return(risorsa.nome, risorsa.lotto, risorsa.nomi_attivita, risorsa.valori_CO2_attivita, risorsa.valore_CO2, risorsa.tipologia, risorsa.lotti_materie_prime, risorsa.token);
     }
 
 
@@ -233,31 +229,31 @@ contract Gestore_nft is Ownable {
         uint256 trovati=0;
         string memory results;
         // scorro tutto il catalogo alla ricerca di risorse con il nome passato
-        for (uint256 i=1;i<=carbonFootprint.currentToken();i++) {
+        for (uint256 i=1; i <= carbonFootprint.currentToken(); i++) {
             CarbonFootprint.Risorsa memory risorsa_i = carbonFootprint.getRisorsaByIdProdotto(i);
-            if(Generica.stringCompare(risorsa_i.nome,_nome)) {
-                results = Generica.concatenate(results,risorsa_i.nome);
+            if(Generica.stringCompare(risorsa_i.nome, _nome)) {
+                results = Generica.concatenate(results, risorsa_i.nome);
                 results = Generica.concatenate(results, ",");
-                results = Generica.concatenate(results,Generica.toString(risorsa_i.lotto));
+                results = Generica.concatenate(results, Generica.toString(risorsa_i.lotto));
                 results = Generica.concatenate(results, ",");
-                results = Generica.concatenate(results,Generica.toString(risorsa_i.valore_CO2));
+                results = Generica.concatenate(results, Generica.toString(risorsa_i.valore_CO2));
                 results = Generica.concatenate(results, ",");
-                results = Generica.concatenate(results,Generica.toString(risorsa_i.token));
+                results = Generica.concatenate(results, Generica.toString(risorsa_i.token));
                 results = Generica.concatenate(results, ",");
-                results = Generica.concatenate(results,risorsa_i.tipologia);
+                results = Generica.concatenate(results, risorsa_i.tipologia);
                 results = Generica.concatenate(results, ",");
-                for(uint j;j<risorsa_i.nomi_attivita.length;j++){
-                    results = Generica.concatenate(results,risorsa_i.nomi_attivita[j]);
-                    results = Generica.concatenate(results," | ");
-                }
-                results = Generica.concatenate(results, ",");
-                for(uint j;j<risorsa_i.valori_CO2_attivita.length;j++){
-                    results = Generica.concatenate(results,Generica.toString(risorsa_i.valori_CO2_attivita[j]));
+                for(uint j; j < risorsa_i.nomi_attivita.length;j++) {
+                    results = Generica.concatenate(results, risorsa_i.nomi_attivita[j]);
                     results = Generica.concatenate(results, " | ");
                 }
                 results = Generica.concatenate(results, ",");
-                for(uint j;j<risorsa_i.lotti_materie_prime.length;j++){
-                    results = Generica.concatenate(results,Generica.toString(risorsa_i.lotti_materie_prime[j]));
+                for(uint j; j < risorsa_i.valori_CO2_attivita.length;j++) {
+                    results = Generica.concatenate(results, Generica.toString(risorsa_i.valori_CO2_attivita[j]));
+                    results = Generica.concatenate(results, " | ");
+                }
+                results = Generica.concatenate(results, ",");
+                for(uint j; j < risorsa_i.lotti_materie_prime.length;j++) {
+                    results = Generica.concatenate(results, Generica.toString(risorsa_i.lotti_materie_prime[j]));
                     results = Generica.concatenate(results, " | ");
                 }
                 results = Generica.concatenate(results, ";");
@@ -266,7 +262,7 @@ contract Gestore_nft is Ownable {
         }
 
         // errore se nessun prodotto ha il nome passato
-        require(trovati!=0, "Non e' stato trovato alcun prodotto/materia prima con il nome inserito");
+        require(trovati != 0, "Non e' stato trovato alcun prodotto/materia prima con il nome inserito");
 
         return results;
     }  
@@ -276,21 +272,16 @@ contract Gestore_nft is Ownable {
     function esistente(string memory _ruolo, address _indirizzo_account)
         public view returns(bool) {
 
-        // se il tipo passato è produttore allora cerco sul mapping dei produttori
-        if(Generica.stringCompare(_ruolo,"produttore")) {
-            for (uint i;i<numero_produttori;i++) {
+        if(Generica.stringCompare(_ruolo, "produttore")) { // se il tipo passato è produttore allora cerco sul mapping dei produttori
+            for (uint i; i < numero_produttori; i++) {
                 if(_indirizzo_account == produttori[i]) return true;
             }
-        }
-        // se il tipo passato è trasformatore allora cerco sul mapping dei trasformatore
-        else if(Generica.stringCompare(_ruolo, "trasformatore")) {
-            for (uint i;i<numero_trasformatori;i++) {
+        } else if(Generica.stringCompare(_ruolo, "trasformatore")) { // se il tipo passato è trasformatore allora cerco sul mapping dei trasformatore
+            for (uint i; i < numero_trasformatori; i++) {
                 if(_indirizzo_account == trasformatori[i]) return true;
             }
-        }
-        // se il tipo passato è cliente allora cerco sul mapping dei clienti
-        else if(Generica.stringCompare(_ruolo, "cliente")) {
-            for (uint i;i<numero_clienti;i++) {
+        } else if (Generica.stringCompare(_ruolo, "cliente")) { // se il tipo passato è cliente allora cerco sul mapping dei clienti
+            for (uint i; i < numero_clienti; i++) {
                 if(_indirizzo_account == clienti[i]) return true;
             }
         }
@@ -305,16 +296,16 @@ contract Gestore_nft is Ownable {
     function esistente(address _indirizzo_account)
         private view returns(bool) {
 
-        for (uint i;i<numero_produttori;i++) {
+        for (uint i; i < numero_produttori; i++) {
             if(_indirizzo_account == produttori[i]) return true;
         }
 
-        for (uint i;i<numero_trasformatori;i++) {
+        for (uint i; i < numero_trasformatori; i++) {
             if(_indirizzo_account == trasformatori[i]) return true;
         }
         
 
-        for (uint i;i<numero_clienti;i++) {
+        for (uint i; i < numero_clienti; i++) {
             if(_indirizzo_account == clienti[i]) return true;
         }
 

@@ -1,14 +1,13 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity ^0.8.0;
+pragma solidity 0.8.3;
+//pragma experimental SMTChecker;
 
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import "@openzeppelin/contracts/utils/Counters.sol";
+import "../node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "../node_modules/@openzeppelin/contracts/utils/Counters.sol";
 
 
 contract CarbonFootprint is ERC721 {
-
-
 
     // per tenere il conteggio dei token prodotti fino ad ora (e quindi delle materie prima/prodotti nel catalogo)
     using Counters for Counters.Counter;
@@ -27,25 +26,21 @@ contract CarbonFootprint is ERC721 {
         bool exists; // attributo che serve per capire se la risorsa esiste o meno
     }
 
-    
     mapping(uint256=>Risorsa) private risorsaByLotto; // sapendo il lotto ricavo la risorsa
+    
     mapping(uint256=>Risorsa) private risorsaByToken_prodotto; // sapendo il token ricavo la risorsa
 
-
     // costruttore del token 
-    constructor () ERC721("CarbonFootprint", "CFP"){
+    constructor() 
+    ERC721("CarbonFootprint", "CFP"){
     }
-
-
-
+    
     // tale funzione crea la risorsa (sia materia prima che trasformato) e la inserisce nelle mapping per 
     // poterne poi estrarre le informazioni
-    function creaProdotto(
-        uint256 _lotto, uint32 _valore_CO2, string[] memory _nomi_attivita, 
+    function creaProdotto(uint256 _lotto, uint32 _valore_CO2, string[] memory _nomi_attivita, 
         uint32[] memory _valori_CO2_attivita, string memory _tipologia, 
         address _possessore, uint256[] memory _lotti_materie_prime, string memory _nome
-        )
-        public returns(uint256){
+        ) public returns(uint256) {
 
         // il token della risorsa è uguale al token corrente + 1
         _tokenIds.increment();
@@ -73,8 +68,6 @@ contract CarbonFootprint is ERC721 {
         return id_nuovo_prodotto;
     }
 
-
-
     // funzione che riceve un lotto e contrassegna la relativa risorsa come "utilizzata"
     function setTipologiaUtilizzato(
         uint256 _lotto
@@ -87,18 +80,11 @@ contract CarbonFootprint is ERC721 {
 
     }
 
-
-
-
-
     // restituisce il numero di token prodotti fino ad ora
     function currentToken(
     ) external view returns(uint256) {
-
         return _tokenIds.current();
-
     }
-
 
     // funzione che riceve un token e restituisce la risorsa con quel token
     function getRisorsaByIdProdotto(
@@ -109,8 +95,6 @@ contract CarbonFootprint is ERC721 {
 
     }
 
-
-
     // funzione che riceve un lotto e restituisce la risorsa con quel lotto
     function getRisorsaByLotto(
         uint256 _lotto
@@ -120,7 +104,7 @@ contract CarbonFootprint is ERC721 {
           
     }
 
-    function transferFrom(address from,address to,uint256 tokenId) public virtual override { 
+    function transferFrom(address from, address to, uint256 tokenId) public virtual override { 
         _safeTransfer(from, to, tokenId, "");
     }
 

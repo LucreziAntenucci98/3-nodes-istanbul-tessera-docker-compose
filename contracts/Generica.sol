@@ -1,18 +1,16 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity ^0.8.0;
+pragma solidity 0.8.3;
+//pragma experimental SMTChecker;
+
 
 library Generica {
 
     //funzione per comparare stringhe
-    function stringCompare(
-        string memory s1, string memory s2
-    ) 
-    external pure returns(bool){
-
+    function stringCompare(string memory s1, string memory s2) 
+    internal pure returns(bool) {
         return keccak256(abi.encodePacked(s1)) == keccak256(abi.encodePacked(s2));
     }
-
 
     // funzione per trasformare un uint256 in una stringa
     function toString(uint256 value) internal pure returns (string memory) {
@@ -36,8 +34,8 @@ library Generica {
     }
 
     // funzione che concatena due stringhe
-    function concatenate(string memory a,string memory b) public pure returns (string memory){
-        return string(abi.encodePacked(a,b));
+    function concatenate(string memory a, string memory b) internal pure returns (string memory) {
+        return string(abi.encodePacked(a, b)); 
     } 
 
 

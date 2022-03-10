@@ -17,7 +17,6 @@ describe("Inserimento attore", async function () {
     await transazioni.aggiungiAttore(accounts[0], accounts[0], "produttore")
     // il metodo restituisce vero se l'argomento passato tra parentesi corrisponde ai valori stampati in precedenza sulla console
     assert(stub.calledWith("Operazione andata a buon fine"));
-    console.log("ciaociao")
     // restore the original function
     stub.restore();
   });
