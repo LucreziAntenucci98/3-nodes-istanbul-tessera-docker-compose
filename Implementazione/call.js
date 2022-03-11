@@ -4,7 +4,7 @@ class Call {
 
     constructor() {
         this.file_contratto = require(contracts_path + "Gestore_nft.json");
-        this.Web3 = require(node_modules_path+"web3");
+        this.Web3 = require(node_modules_path + "web3");
         this.string = JSON.stringify(this.file_contratto);
         this.objectValue = JSON.parse(this.string);
         this.indirizzo_contratto = this.objectValue['networks']['10']['address'];
@@ -16,8 +16,8 @@ class Call {
 
     // funzione che restituisce i 3 account collegati ai 3 nodi
     async ottieniaccounts() {
-        var web3;
-        var accounts = [];
+        let web3;
+        let accounts = [];
         for (let i = 0; i < 3; i++) {
             web3 = new this.Web3('http://localhost:2200' + i);
             await web3.eth.getAccounts().then((value) => {
@@ -34,10 +34,10 @@ class Call {
 
 
     // riceve il lotto ed il richiedente e ritorna le informazioni relative alla risorsa con quel lotto
-    getInfoByLotto(account_richiedente,lotto){
+    getInfoByLotto(account_richiedente, lotto) {
         let web3 = new this.Web3("http://localhost:22000");
-        var simpleContract = new web3.eth.Contract(this.abi, this.indirizzo_contratto, { from: account_richiedente })
-        
+        let simpleContract = new web3.eth.Contract(this.abi, this.indirizzo_contratto, { from: account_richiedente })
+
         // uso la promise affinché chi chiama la funzione possa usare await per aspettare che termini l'esecuzione
         return new Promise((resolve) => {
             // funzione dello smart contract che prende un lotto e ritorna le info della risorsa con quel lotto
@@ -61,9 +61,9 @@ class Call {
 
 
     // riceve il nome ed il richiedente e ritorna la lista di risorse con quel nome
-    getInfoByNome(account_richiedente,nome) {
+    getInfoByNome(account_richiedente, nome) {
         let web3 = new this.Web3("http://localhost:22000");
-        var simpleContract = new web3.eth.Contract(this.abi, this.indirizzo_contratto, { from: account_richiedente })
+        let simpleContract = new web3.eth.Contract(this.abi, this.indirizzo_contratto, { from: account_richiedente })
 
         // uso la promise affinché chi chiama la funzione possa usare await per aspettare che termini l'esecuzione
         return new Promise((resolve) => {
@@ -74,39 +74,40 @@ class Call {
                     console.log("Ops, qualcosa è andato storto: " + errore.message);
                 })
                 .then((value) => {
-                    if (value != undefined){
-                        var elem = value.split(";");
-                        for(var j=0;j<elem.length-1;j++){
-                            var att = elem[j].split(",");
+                    if (value !== undefined) {
+                        console.log("---------------------------");
+                        let elem = value.split(";");
+                        for (let j = 0; j < elem.length - 1; j++) {
+                            let att = elem[j].split(",");
                             console.log("nome -> " + att[0]);
                             console.log("lotto -> " + att[1]);
                             console.log("CO2_totale -> " + att[2]);
                             console.log("token -> " + att[3]);
                             console.log("tipologia -> " + att[4]);
-                
+
                             // nel caso in cui le attivita, i consumi o la lista materie prime siano vuote
                             // scriviamo che non esitono
-                            if (att[5] == "") {
+                            if (att[5] === "") {
                                 console.log("lista attivita svolte -> nessuna attivita svolta");
                             }
                             else {
                                 console.log("lista attivita svolte -> " + att[5]);
                             }
-                
-                            if (att[6] == "") {
+
+                            if (att[6] === "") {
                                 console.log("lista consumi attivita svolte -> nessun consumo disponibile");
                             }
                             else {
                                 console.log("lista consumi attivita svolte -> " + att[6]);
                             }
-                
-                            if (att[7] == "") {
+
+                            if (att[7] === "") {
                                 console.log("lotti materie prime utilizzate -> nessuna materia prima utilizzata");
                             }
                             else {
                                 console.log("lotti materie prime utilizzate -> " + att[7]);
                             }
-                        console.log("---------------------------");
+                            console.log("---------------------------");
                         }
                     }
                     resolve()
@@ -122,17 +123,17 @@ class Call {
 
 
     // riceve il token ed il richiedente e ritorna le informazioni relative alla risorsa con quel token
-        getInfoByToken(account_richiedente,id_token){
+    getInfoByToken(account_richiedente, id_token) {
         let web3 = new this.Web3("http://localhost:22000");
-        var simpleContract = new web3.eth.Contract(this.abi, this.indirizzo_contratto, { from: account_richiedente })
+        let simpleContract = new web3.eth.Contract(this.abi, this.indirizzo_contratto, { from: account_richiedente })
 
         // uso la promise affinché chi chiama la funzione possa usare await per aspettare che termini l'esecuzione
         return new Promise((resolve) => {
-                        // funzione dello smart contract che prende il token e ritorna le info della risorsa con quel token
-                        // se il token non appartiene a nessuna risorsa allora restituisce un errore
-                        simpleContract.methods.getInfoByToken(id_token).call({ from: account_richiedente })
+            // funzione dello smart contract che prende il token e ritorna le info della risorsa con quel token
+            // se il token non appartiene a nessuna risorsa allora restituisce un errore
+            simpleContract.methods.getInfoByToken(id_token).call({ from: account_richiedente })
                 .catch((errore) => {
-                    console.log("erroreeeeee: " + errore.message);
+                    console.log("Errore: " + errore.message);
                 }
                 ).then((risorsa) => {
                     // chiamo la funzione che formatta i dati restituiti dalla chiamata allo smart contract
@@ -150,13 +151,13 @@ class Call {
 
 
 
-    getOwnerByToken(account_richiedente,id_token) {
+    getOwnerByToken(account_richiedente, id_token) {
         let web3 = new this.Web3("http://localhost:22000");
-        var simpleContract = new web3.eth.Contract(this.abi, this.indirizzo_contratto, { from: account_richiedente })
+        let simpleContract = new web3.eth.Contract(this.abi, this.indirizzo_contratto, { from: account_richiedente })
 
         // uso la promise affinché chi chiama la funzione possa usare await per aspettare che termini l'esecuzione
         return new Promise((resolve) => {
-                        // funzione dello smart contract che prende un token e ritorna l'address del possessore
+            // funzione dello smart contract che prende un token e ritorna l'address del possessore
             // se il token non appartiene a nessuna risorsa allora restituisce un errore
 
             simpleContract.methods.getOwnerByToken(id_token).call({ from: account_richiedente })
@@ -166,7 +167,7 @@ class Call {
                 )
                 .then((receipt) => {
                     // se non c'è stato alcun errore stampo la ricevuta (cioè l'indirizzo del possessore)
-                    if (receipt != undefined) console.log(receipt)
+                    if (receipt !== undefined) console.log(receipt)
                     resolve();
                 });
             //parentesi che chiude la "return new promise"
@@ -180,9 +181,9 @@ class Call {
 
 
     // funzione che riceve un indirizzo da controllare ed un ruolo e ritorna vero se l'indirizzo ha già quel ruolo
-    controlloRuolo(indirizzo_da_controllare,ruolo) {
+    controlloRuolo(indirizzo_da_controllare, ruolo) {
         let web3 = new this.Web3("http://localhost:22000");
-        var simpleContract = new web3.eth.Contract(this.abi, this.indirizzo_contratto)
+        let simpleContract = new web3.eth.Contract(this.abi, this.indirizzo_contratto)
 
         // uso la promise affinché chi chiama la funzione possa usare await per aspettare che termini l'esecuzione
         return new Promise((resolve) => {
@@ -206,7 +207,8 @@ class Call {
 
     // funzione per formattare i risultati forniti dalle call
     stampa_risorsa(risorsa) {
-        if (risorsa != undefined) {
+        if (risorsa !== undefined) {
+            console.log("---------------------------");
             // andiamo a scomporre la risorsa in 7 attributi in modo da poterli manipolare separatamente
             const { 0: nome, 1: lotto, 2: nomi_attivita, 3: consumi_attivita, 4: CO2, 5: tipologia, 6: lista_materie_prime, 7: token } = risorsa;
             console.log("nome -> " + nome);
@@ -217,26 +219,27 @@ class Call {
 
             // nel caso in cui le attivita, i consumi o la lista materie prime siano vuote
             // scriviamo che non esitono
-            if (nomi_attivita == "") {
+            if (nomi_attivita === "") {
                 console.log("lista attivita svolte -> nessuna attivita svolta");
             }
             else {
                 console.log("lista attivita svolte -> " + nomi_attivita);
             }
 
-            if (consumi_attivita == "") {
+            if (consumi_attivita === "") {
                 console.log("lista consumi attivita svolte -> nessun consumo disponibile");
             }
             else {
                 console.log("lista consumi attivita svolte -> " + consumi_attivita);
             }
 
-            if (lista_materie_prime == "") {
+            if (lista_materie_prime === "") {
                 console.log("lotti materie prime utilizzate -> nessuna materia prima utilizzata");
             }
             else {
                 console.log("lotti materie prime utilizzate -> " + lista_materie_prime);
             }
+            console.log("---------------------------");
         }
     }
 

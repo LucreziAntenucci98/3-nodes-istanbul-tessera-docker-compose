@@ -1,7 +1,7 @@
 
-var footprint= artifacts.require("CarbonFootprint");
-var generica = artifacts.require("Generica");
-var gestore = artifacts.require("Gestore_nft");
+const footprint= artifacts.require("CarbonFootprint");
+const generica = artifacts.require("Generica");
+const gestore = artifacts.require("Gestore_nft");
 
 module.exports = async function (deployer) {
 deployer.deploy(footprint);

@@ -135,13 +135,14 @@ contract Gestore_nft is Ownable {
             // estraggo la risorsa dal catalogo conoscendone il lotto
             CarbonFootprint.Risorsa memory risorsa = carbonFootprint.getRisorsaByLotto(_lotti_materie_prime[i]);
        
+       
+            // trasformo l'uint256 in una stringa in modo da concatenarla nell'errore
+            string memory stringa_lotto = Generica.toString(_lotti_materie_prime[i]);
             // errore se la materia prima non esiste
-            require(risorsa.exists == true, "Materia prima non presente");
+            require(risorsa.exists == true, Generica.concatenate("Nel catalogo non e' presente alcuna materia prima con lotto pari a ", stringa_lotto));
 
             // errore se il lotto è 0 
             require(_lotti_materie_prime[i] != 0, "Il lotto 0 non e' valido");
-            // trasformo l'uint256 in una stringa in modo da concatenarla nell'errore
-            string memory stringa_lotto = Generica.toString(_lotti_materie_prime[i]);
             // errore se il richiedente non possiede la risorsa
             require(getOwnerByToken(risorsa.token) == msg.sender, Generica.concatenate("Non sei in possesso della materia prima con lotto", stringa_lotto));
             // errore se la risorsa non è una materia prima

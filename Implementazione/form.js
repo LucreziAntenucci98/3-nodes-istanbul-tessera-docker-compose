@@ -10,7 +10,6 @@ const inquirer = require(node_modules_path + "inquirer");
 
 //form in cui scegliere un attore tra quelli disponibili ed un ruolo tra quelli assegnabili 
 exports.form_inserimento_attore = function (address, privilegi) {
-    console.log(address[0])
 
     const inserimento_attore = [
         {
@@ -67,7 +66,7 @@ exports.form_materia_prima = function () {
                 
                 // errore se l'input non è un numero, è < 0 o maggiore del limite massimo degli uint in solidity
                 
-                if (reg.test(value) && numero != NaN && numero > 0 && numero < Math.pow(2, 256) - 1) {
+                if (reg.test(value) && numero !==NaN && numero > 0 && numero < Math.pow(2, 256) - 1) {
                 
                     return true;
                 } else {
@@ -86,7 +85,7 @@ exports.form_materia_prima = function () {
                 {var reg = /^\d+$/
                 var numero = parseInt(value)
                 // errore se l'input non è un numero, è < 0 o maggiore del limite massimo degli uint in solidity
-                if (reg.test(value) && numero != NaN && numero > 0 && numero < Math.pow(2, 32) - 1) {
+                if (reg.test(value) && numero !==NaN && numero > 0 && numero < Math.pow(2, 32) - 1) {
                     return true;
                 } else {
                     return 'inserire un intero positivo a 32 bit';
@@ -115,7 +114,7 @@ exports.form_numero_prodotto = function () {
                 var reg = /^\d+$/
                 var numero = parseInt(value)
                     // errore se l'input non è un numero, è < 0 o > di 5
-                if (reg.test(value) && numero != NaN && numero > 0 && numero < 5) {
+                if (reg.test(value) && numero !==NaN && numero > 0 && numero < 5) {
                     return true;
                 } else {
                     return 'Inserire un numero di risorse compreso tra 0 e 5 (estremi esclusi)';
@@ -131,7 +130,7 @@ exports.form_numero_prodotto = function () {
                 var reg = /^\d+$/
                 var numero = parseInt(value)
                 // errore se l'input non è un numero, è < 0 o > 5
-                if (reg.test(value) && numero != NaN && numero > 0 && numero < 5) {
+                if (reg.test(value) && numero !==NaN && numero > 0 && numero < 5) {
                     return true;
                 } else {
                     return 'Inserire un numero di attivita compreso tra 0 e 5 (estremi esclusi)';
@@ -180,7 +179,7 @@ exports.form_prodotto = function (numero_risorse, numero_attivita) {
             {var reg = /^\d+$/
                 var numero = parseInt(value)
                 // errore se l'input non è un numero, è < 0 o maggiore del limite massimo degli uint in solidity
-                if (reg.test(value) && numero != NaN && numero > 0 && numero < Math.pow(2, 256) - 1) {
+                if (reg.test(value) && numero !==NaN && numero > 0 && numero < Math.pow(2, 256) - 1) {
                     return true;
                 } else {
                     return 'inserire un intero > 0';
@@ -220,7 +219,7 @@ exports.form_prodotto = function (numero_risorse, numero_attivita) {
                 var reg = /^\d+$/
                 var numero = parseInt(value);
                 // errore se l'input non è un numero, è < 0 o maggiore del limite massimo degli uint in solidity
-                if (reg.test(value) && numero != NaN && numero > 0 && numero < Math.pow(2, 32) - 1) {
+                if (reg.test(value) && numero !==NaN && numero > 0 && numero < Math.pow(2, 32) - 1) {
                     return true;
                 } else {
                     return 'inserire un intero positivo a 32 bit';
@@ -245,7 +244,7 @@ exports.form_prodotto = function (numero_risorse, numero_attivita) {
             {var reg = /^\d+$/
                 var numero = parseInt(value)
                 // errore se l'input non è un numero, è < 0 o maggiore del limite massimo degli uint in solidity
-                if (reg.test(value) && numero != NaN && numero > 0 && numero < Math.pow(2, 256) - 1) {
+                if (reg.test(value) && numero !==NaN && numero > 0 && numero < Math.pow(2, 256) - 1) {
                     return true;
                 } else {
                     return 'Inserire un numero intero > 0';
@@ -279,7 +278,7 @@ exports.form_trasferimento = function (address,privilegi) {
                 var reg = /^\d+$/
                 var numero = parseInt(value)
                 // errore se l'input non è un numero, è < 0 o maggiore del limite massimo degli uint in solidity
-                if (reg.test(value) && numero != NaN && numero > 0 && numero < Math.pow(2, 256) - 1) {
+                if (reg.test(value) && numero !==NaN && numero > 0 && numero < Math.pow(2, 256) - 1) {
                     return true;
                 } else {
                     return 'inserire un intero > 0';
@@ -307,7 +306,7 @@ exports.form_by_token = function () {
         {var reg = /^\d+$/
             var numero = parseInt(value)
             // errore se l'input non è un numero, è < 0 o maggiore del limite massimo degli uint in solidity
-            if (reg.test(value) && numero != NaN && numero > 0 && numero < Math.pow(2, 256) - 1) {
+            if (reg.test(value) && numero !==NaN && numero > 0 && numero < Math.pow(2, 256) - 1) {
                 return true;
             } else {
                 return 'inserire un intero > 0';
@@ -336,7 +335,7 @@ exports.form_by_lotto = function () {
         {var reg = /^\d+$/
             var numero = parseInt(value)
             // errore se l'input non è un numero, è < 0 o maggiore del limite massimo degli uint in solidity
-            if (reg.test(value) && numero != NaN && numero > 0 && numero < Math.pow(2, 256) - 1) {
+            if (reg.test(value) && numero !==NaN && numero > 0 && numero < Math.pow(2, 256) - 1) {
                 return true;
             } else {
                 return 'inserire un intero > 0';
@@ -438,7 +437,7 @@ exports.form_continua = function () {
         type: 'input',
         message: "Vuoi continuare a svolgere operazioni? (Y/N): ",
         validate: function (value) {
-            if (value == "Y" || value == "y" || value == "N" || value == "n") {
+            if (value=== "Y" || value=== "y" || value=== "N" || value=== "n") {
                 return true;
             } else {
                 return 'Valori ammessi: Y/N';
