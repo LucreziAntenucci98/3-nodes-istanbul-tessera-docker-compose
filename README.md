@@ -1,6 +1,7 @@
 # Green-chain 
 
 Green-chain è un'applicazione che consente di inserire prodotti e materie prime all'interno di un catalogo implementato utilizzando una blockchain costituita da 3 nodi, in modo da garantire una completa tracciabilità dei dati.
+La versione scaricabile è eseguibile solamente in Windows
 
 ## Prerequisiti
 
@@ -9,19 +10,19 @@ Green-chain è un'applicazione che consente di inserire prodotti e materie prime
 - [node.js](https://nodejs.org/it/download/) 
 
 Dopo aver installato Node.js sarà anche necessario scaricare le seguenti dipendenze:
-- truffle@5.4.29
+- truffle
 - web3
-- chalk@2.4 
-- boxen@4.0
+- chalk
+- boxen
 - clear
 - clui
 - figlet
 - inquirer
 - @openzeppelin/contracts
 
-Per far ciò basta posizionarsi nella cartella di progetto precedentemente scaricata, aprire il prompt di comando ed eseguire:
-
+Per far ciò basta posizionarsi nella cartella di progetto precedentemente scaricata, aprire il prompt di comando con privilegi di amministratore ed eseguire:
 ```bash
+npm install -g truffle@5.4.29
 npm install
 ```
 
