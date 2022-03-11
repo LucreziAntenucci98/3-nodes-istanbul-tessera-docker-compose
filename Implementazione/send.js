@@ -8,14 +8,14 @@ class Send {
         this.web3 = new this.Web3("http://localhost:2200" + nodo_selezionato);
         this.string = JSON.stringify(this.file_contratto);
         this.objectValue = JSON.parse(this.string);
-        this.indirizzo_contratto = this.objectValue['networks']['10']['address'];
-        this.abi = this.objectValue['abi'];
+        this.indirizzo_contratto = this.objectValue.networks['10'].address;
+        this.abi = this.objectValue.abi;
     }
 
 
     // funzione che riceve l'account richiedente, l'account a cui assegnare il ruolo ed il ruolo stesso
     aggiungiAttore(account_richiedente,account,tipologia) {
-        let simpleContract = new this.web3.eth.Contract(this.abi, this.indirizzo_contratto, { from: account_richiedente })
+        let simpleContract = new this.web3.eth.Contract(this.abi, this.indirizzo_contratto, { from: account_richiedente });
 
         // creiamo una promise in modo che quando viene chiamato questo metodo il chiamante aspetti fino a che
         // non venga attivato il resolve (cioè quando si entra nel then ed è perciò stata creata la ricevuta)
@@ -27,9 +27,9 @@ class Send {
                 .catch((errore) => {
                     resolve("Errore: " + errore.message);
                 }).then((ricevuta) => {
-                    resolve("Operazione andata a buon fine")
+                    resolve("Operazione andata a buon fine");
                 });
-        })
+        });
     }
 
 
@@ -40,7 +40,7 @@ class Send {
 
     // funzione che riceve l'account richiedente, un lotto, un nome ed un valore di CO2 e crea la materia prima 
     aggiungiMateriaPrima(account_richiedente,lotto,CO2,nome) {
-        let simpleContract = new this.web3.eth.Contract(this.abi, this.indirizzo_contratto, { from: account_richiedente })
+        let simpleContract = new this.web3.eth.Contract(this.abi, this.indirizzo_contratto, { from: account_richiedente });
         // creiamo una promise in modo che quando viene chiamato questo metodo il chiamante aspetti fino a che
         // non venga attivato il resolve (cioè quando si entra nel then ed è perciò stata creata la ricevuta)
         return new Promise((resolve) => {
@@ -52,13 +52,13 @@ class Send {
                     resolve("Errore: " + errore.message);
                 }).then((ricevuta) => {
                     // se non ci sono stati errori stampo la ricevuta
-                    resolve("Operazione andata a buon fine")
+                    resolve("Operazione andata a buon fine");
                 });
-        })
+        });
     }
 
     trasferimentoRisorsa(account_richiedente,destinatario,lotto){
-        let simpleContract = new this.web3.eth.Contract(this.abi, this.indirizzo_contratto, { from: account_richiedente })
+        let simpleContract = new this.web3.eth.Contract(this.abi, this.indirizzo_contratto, { from: account_richiedente });
         // creiamo una promise in modo che quando viene chiamato questo metodo il chiamante aspetti fino a che
         // non venga attivato il resolve (cioè quando si entra nel then ed è perciò stata creata la ricevuta)
         return new Promise((resolve) => {
@@ -70,9 +70,9 @@ class Send {
                     resolve("Errore: " + errore.message);
                 }).then((ricevuta) => {
                     // se non ci sono stati errori stampo la ricevuta
-                    resolve("Operazione andata a buon fine")
+                    resolve("Operazione andata a buon fine");
                 });
-        })
+        });
 
     }
 
@@ -82,7 +82,7 @@ class Send {
     // delle attività, il nome del nuovo prodotto, un vettore con i lotti delle materie prime utilizzate per la
     // produzione ed il lotto del nuovo prodotto
     creaProdotto(account_richiedente,nome_attivita,consumo_attivita,nome_prodotto,materie_prime,lotto) {
-        let simpleContract = new this.web3.eth.Contract(this.abi, this.indirizzo_contratto, { from: account_richiedente })
+        let simpleContract = new this.web3.eth.Contract(this.abi, this.indirizzo_contratto, { from: account_richiedente });
         // creiamo una promise in modo che quando viene chiamato questo metodo il chiamante aspetti fino a che
         // non venga attivato il resolve (cioè quando si entra nel then ed è perciò stata creata la ricevuta)
         return new Promise((resolve) => {
@@ -96,9 +96,9 @@ class Send {
                     resolve("Errore: " + errore.message);
                 }).then((ricevuta) => {
                     // se non ci sono stati errori stampo la ricevuta
-                    resolve("Operazione andata a buon fine")
+                    resolve("Operazione andata a buon fine");
                 });
-        })
+        });
     }
 }
 module.exports = Send;

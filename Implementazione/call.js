@@ -7,8 +7,8 @@ class Call {
         this.Web3 = require(node_modules_path + "web3");
         this.string = JSON.stringify(this.file_contratto);
         this.objectValue = JSON.parse(this.string);
-        this.indirizzo_contratto = this.objectValue['networks']['10']['address'];
-        this.abi = this.objectValue['abi'];
+        this.indirizzo_contratto = this.objectValue.networks['10'].address;
+        this.abi = this.objectValue.abi;
     }
 
 
@@ -23,10 +23,10 @@ class Call {
             await web3.eth.getAccounts().then((value) => {
                 accounts.push(value[0]);
             }).catch((error) => {
-                console.log("Si è verificato un errore!" + error)
-            })
+                console.log("Si è verificato un errore!" + error);
+            });
         }
-        return accounts
+        return accounts;
     }
 
 
@@ -36,7 +36,7 @@ class Call {
     // riceve il lotto ed il richiedente e ritorna le informazioni relative alla risorsa con quel lotto
     getInfoByLotto(account_richiedente, lotto) {
         let web3 = new this.Web3("http://localhost:22000");
-        let simpleContract = new web3.eth.Contract(this.abi, this.indirizzo_contratto, { from: account_richiedente })
+        let simpleContract = new web3.eth.Contract(this.abi, this.indirizzo_contratto, { from: account_richiedente });
 
         // uso la promise affinché chi chiama la funzione possa usare await per aspettare che termini l'esecuzione
         return new Promise((resolve) => {
@@ -48,11 +48,11 @@ class Call {
                 })
                 .then((risorsa) => {
                     // chiamo la funzione che formatta i dati restituiti dalla chiamata allo smart contract
-                    this.stampa_risorsa(risorsa)
+                    this.stampa_risorsa(risorsa);
                     resolve();
                 });
             //parentesi che chiude la "return new promise"
-        })
+        });
 
     }
 
@@ -63,7 +63,7 @@ class Call {
     // riceve il nome ed il richiedente e ritorna la lista di risorse con quel nome
     getInfoByNome(account_richiedente, nome) {
         let web3 = new this.Web3("http://localhost:22000");
-        let simpleContract = new web3.eth.Contract(this.abi, this.indirizzo_contratto, { from: account_richiedente })
+        let simpleContract = new web3.eth.Contract(this.abi, this.indirizzo_contratto, { from: account_richiedente });
 
         // uso la promise affinché chi chiama la funzione possa usare await per aspettare che termini l'esecuzione
         return new Promise((resolve) => {
@@ -110,10 +110,10 @@ class Call {
                             console.log("---------------------------");
                         }
                     }
-                    resolve()
+                    resolve();
                 });
             //parentesi che chiude la "return new promise"
-        })
+        });
     }
 
 
@@ -125,7 +125,7 @@ class Call {
     // riceve il token ed il richiedente e ritorna le informazioni relative alla risorsa con quel token
     getInfoByToken(account_richiedente, id_token) {
         let web3 = new this.Web3("http://localhost:22000");
-        let simpleContract = new web3.eth.Contract(this.abi, this.indirizzo_contratto, { from: account_richiedente })
+        let simpleContract = new web3.eth.Contract(this.abi, this.indirizzo_contratto, { from: account_richiedente });
 
         // uso la promise affinché chi chiama la funzione possa usare await per aspettare che termini l'esecuzione
         return new Promise((resolve) => {
@@ -137,11 +137,11 @@ class Call {
                 }
                 ).then((risorsa) => {
                     // chiamo la funzione che formatta i dati restituiti dalla chiamata allo smart contract
-                    this.stampa_risorsa(risorsa)
-                    resolve()
+                    this.stampa_risorsa(risorsa);
+                    resolve();
                 });
             //parentesi che chiude la "return new promise"
-        })
+        });
     }
 
 
@@ -153,7 +153,7 @@ class Call {
 
     getOwnerByToken(account_richiedente, id_token) {
         let web3 = new this.Web3("http://localhost:22000");
-        let simpleContract = new web3.eth.Contract(this.abi, this.indirizzo_contratto, { from: account_richiedente })
+        let simpleContract = new web3.eth.Contract(this.abi, this.indirizzo_contratto, { from: account_richiedente });
 
         // uso la promise affinché chi chiama la funzione possa usare await per aspettare che termini l'esecuzione
         return new Promise((resolve) => {
@@ -167,11 +167,11 @@ class Call {
                 )
                 .then((receipt) => {
                     // se non c'è stato alcun errore stampo la ricevuta (cioè l'indirizzo del possessore)
-                    if (receipt !== undefined) console.log(receipt)
+                    if (receipt !== undefined) console.log(receipt);
                     resolve();
                 });
             //parentesi che chiude la "return new promise"
-        })
+        });
     }
 
 
@@ -183,7 +183,7 @@ class Call {
     // funzione che riceve un indirizzo da controllare ed un ruolo e ritorna vero se l'indirizzo ha già quel ruolo
     controlloRuolo(indirizzo_da_controllare, ruolo) {
         let web3 = new this.Web3("http://localhost:22000");
-        let simpleContract = new web3.eth.Contract(this.abi, this.indirizzo_contratto)
+        let simpleContract = new web3.eth.Contract(this.abi, this.indirizzo_contratto);
 
         // uso la promise affinché chi chiama la funzione possa usare await per aspettare che termini l'esecuzione
         return new Promise((resolve) => {
@@ -198,7 +198,7 @@ class Call {
                     resolve(receipt);
                 });
             //parentesi che chiude la "return new promise"
-        })
+        });
     }
 
 
