@@ -87,21 +87,21 @@ class Call {
 
                             // nel caso in cui le attivita, i consumi o la lista materie prime siano vuote
                             // scriviamo che non esitono
-                            if (att[5] === "") {
+                            if (att[5] == "") {
                                 console.log("lista attivita svolte -> nessuna attivita svolta");
                             }
                             else {
                                 console.log("lista attivita svolte -> " + att[5]);
                             }
 
-                            if (att[6] === "") {
+                            if (att[6] == "") {
                                 console.log("lista consumi attivita svolte -> nessun consumo disponibile");
                             }
                             else {
                                 console.log("lista consumi attivita svolte -> " + att[6]);
                             }
 
-                            if (att[7] === "") {
+                            if (att[7] == "") {
                                 console.log("lotti materie prime utilizzate -> nessuna materia prima utilizzata");
                             }
                             else {
@@ -219,21 +219,21 @@ class Call {
 
             // nel caso in cui le attivita, i consumi o la lista materie prime siano vuote
             // scriviamo che non esitono
-            if (nomi_attivita === "") {
+            if (nomi_attivita == "") {
                 console.log("lista attivita svolte -> nessuna attivita svolta");
             }
             else {
                 console.log("lista attivita svolte -> " + nomi_attivita);
             }
 
-            if (consumi_attivita === "") {
+            if (consumi_attivita == "") {
                 console.log("lista consumi attivita svolte -> nessun consumo disponibile");
             }
             else {
                 console.log("lista consumi attivita svolte -> " + consumi_attivita);
             }
 
-            if (lista_materie_prime === "") {
+            if (lista_materie_prime == "") {
                 console.log("lotti materie prime utilizzate -> nessuna materia prima utilizzata");
             }
             else {

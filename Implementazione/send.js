@@ -26,7 +26,7 @@ class Send {
                 .send({ from: account_richiedente })
                 .catch((errore) => {
                     resolve("Errore: " + errore.message);
-                }).then((ricevuta) => {
+                }).then(() => {
                     resolve("Operazione andata a buon fine");
                 });
         });
@@ -50,7 +50,7 @@ class Send {
                 .send({ from: account_richiedente })
                 .catch((errore) => {
                     resolve("Errore: " + errore.message);
-                }).then((ricevuta) => {
+                }).then(() => {
                     // se non ci sono stati errori stampo la ricevuta
                     resolve("Operazione andata a buon fine");
                 });
@@ -68,7 +68,7 @@ class Send {
                 .send({ from: account_richiedente })
                 .catch((errore) => {
                     resolve("Errore: " + errore.message);
-                }).then((ricevuta) => {
+                }).then(() => {
                     // se non ci sono stati errori stampo la ricevuta
                     resolve("Operazione andata a buon fine");
                 });
@@ -94,7 +94,7 @@ class Send {
                 .send({ from: account_richiedente })
                 .catch((errore) => {
                     resolve("Errore: " + errore.message);
-                }).then((ricevuta) => {
+                }).then(() => {
                     // se non ci sono stati errori stampo la ricevuta
                     resolve("Operazione andata a buon fine");
                 });

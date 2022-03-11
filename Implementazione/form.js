@@ -2,6 +2,44 @@ const node_modules_path = require("./config").node_modules_path;
 const inquirer = require(node_modules_path + "inquirer");
 
 
+// funzione per la validazione dei nomi nelle form
+const validatore_nome = function(value) {
+    let reg = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
+    if (reg.test(value)) {
+        return 'Sono ammesse lettere dalla A alla Z e numeri da 0 a 9';
+    }
+    if (value.length > 0 && value.length < 32) {
+        return true;
+    } else {
+        return 'Inserire un nome con meno di 32 caratteri';
+    }
+}
+
+
+// funzione per la validazione dei lotti e dei token
+const validatore_lotto = function(value) {
+    let reg = /^\d+$/;
+    let numero = parseInt(value);
+    // errore se l'input non è un numero, è < 1 o maggiore del limite massimo degli uint in solidity
+    if (reg.test(value) && !isNaN(numero) && numero > 0 && numero < Math.pow(2, 256) - 1) {
+        return true;
+    } else {
+        return 'Inserire un intero > 0 e minore di 2^256-1';
+    }
+}
+
+
+
+const validatore_CO2 = function(value) {
+    let reg = /^\d+$/;
+    let numero = parseInt(value);
+    // errore se l'input non è un numero, è < 1 o maggiore del limite massimo degli uint in solidity
+    if (reg.test(value) && !isNaN(numero) && numero > 0 && numero < Math.pow(2, 32) - 1) {
+        return true;
+    } else {
+        return 'Inserire un intero positivo a 32 bit';
+    }
+}
 
 //////////////////////////// FORM TRANSAZIONI ////////////////////////////////
 
@@ -42,37 +80,14 @@ exports.form_materia_prima = function () {
             name: 'nome',
             type: 'input',
             message: 'Nome materia prima: ',
-            validate: function (value) {
-                let reg = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
-                if (reg.test(value))
-                {
-                    return 'sono ammesse lettere dalla A alla Z e numeri da 0 a 9';
-                }
-                if (value.length > 0 && value.length < 32) {
-                    return true;
-                } else {
-                    return 'inserire un nome con meno di 32 caratteri';
-                }
-            }
+            validate: validatore_nome
         },
 
         {
             name: 'lotto',
             type: 'input',
             message: 'inserire lotto della materia prima: ',
-            validate: function (value) 
-                {let reg = /^\d+$/;
-                let numero = parseInt(value);
-                
-                // errore se l'input non è un numero, è < 0 o maggiore del limite massimo degli uint in solidity
-                
-                if (reg.test(value) && !isNaN(numero) && numero > 0 && numero < Math.pow(2, 256) - 1) {
-                
-                    return true;
-                } else {
-                    return 'inserire un intero > 0';
-                }
-            }
+            validate: validatore_lotto
 
         },
 
@@ -81,16 +96,7 @@ exports.form_materia_prima = function () {
             name: 'CO2',
             type: 'input',
             message: 'Valore CO2: ',
-            validate: function (value) 
-                {let reg = /^\d+$/;
-                let numero = parseInt(value);
-                // errore se l'input non è un numero, è < 0 o maggiore del limite massimo degli uint in solidity
-                if (reg.test(value) && !isNaN(numero) && numero > 0 && numero < Math.pow(2, 32) - 1) {
-                    return true;
-                } else {
-                    return 'inserire un intero positivo a 32 bit';
-                }
-            }
+            validate: validatore_CO2
         }
     ];
     return inquirer.prompt(materia_prima);
@@ -113,7 +119,7 @@ exports.form_numero_prodotto = function () {
             validate: function (value) {
                 let reg = /^\d+$/;
                 let numero = parseInt(value);
-                    // errore se l'input non è un numero, è < 0 o > di 5
+                // errore se l'input non è un numero, è < 1 o > di 5
                 if (reg.test(value) && !isNaN(numero) && numero > 0 && numero < 5) {
                     return true;
                 } else {
@@ -126,10 +132,10 @@ exports.form_numero_prodotto = function () {
             name: 'numero_attivita',
             type: 'input',
             message: 'Numero di attivita svolte per portare a termine la produzione: ',
-            validate: function (value){
+            validate: function (value) {
                 let reg = /^\d+$/;
                 let numero = parseInt(value);
-                // errore se l'input non è un numero, è < 0 o > 5
+                // errore se l'input non è un numero, è < 1 o > 5
                 if (reg.test(value) && !isNaN(numero) && numero > 0 && numero < 5) {
                     return true;
                 } else {
@@ -157,35 +163,14 @@ exports.form_prodotto = function (numero_risorse, numero_attivita) {
             name: 'nome',
             type: 'input',
             message: 'Nome nuovo prodotto: ',
-            validate: function (value) {
-                let reg = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
-                if (reg.test(value))
-                {
-                    return 'sono ammesse lettere dalla A alla Z e numeri da 0 a 9';
-                }
-                if (value.length > 0 && value.length < 32) {
-                    return true;
-                } else {
-                    return 'inserire un nome con meno di 32 caratteri';
-                }
-            }
+            validate: validatore_nome
         },
 
         {
             name: 'lotto',
             type: 'input',
             message: 'inserire lotto del nuovo prodotto: ',
-            validate: function (value) 
-            {let reg = /^\d+$/;
-                let numero = parseInt(value);
-                // errore se l'input non è un numero, è < 0 o maggiore del limite massimo degli uint in solidity
-                if (reg.test(value) && !isNaN(numero) && numero > 0 && numero < Math.pow(2, 256) - 1) {
-                    return true;
-                } else {
-                    return 'inserire un intero > 0';
-                }
-            }
-
+            validate: validatore_lotto
         }
     ];
 
@@ -197,34 +182,14 @@ exports.form_prodotto = function (numero_risorse, numero_attivita) {
             name: 'nome_attivita_' + i,
             type: 'input',
             message: 'Nome attivita numero_' + i + ": ",
-            validate: function (value) {
-                let reg = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
-                if (reg.test(value))
-                {
-                    return 'sono ammesse lettere dalla A alla Z e numeri da 0 a 9';
-                }
-                if (value.length > 0 && value.length < 32) {
-                    return true;
-                } else {
-                    return 'Inserire un nome con meno di 32 caratteri';
-                }
-            }
+            validate: validatore_nome
         },
 
         {
             name: 'CO2_attivita_numero_' + i,
             type: 'input',
             message: 'CO2 attivita numero_' + i + ": ",
-            validate: function (value) {
-                let reg = /^\d+$/;
-                let numero = parseInt(value);
-                // errore se l'input non è un numero, è < 0 o maggiore del limite massimo degli uint in solidity
-                if (reg.test(value) && !isNaN(numero) && numero > 0 && numero < Math.pow(2, 32) - 1) {
-                    return true;
-                } else {
-                    return 'inserire un intero positivo a 32 bit';
-                }
-            }
+            validate: validatore_CO2
         }];
 
 
@@ -240,16 +205,7 @@ exports.form_prodotto = function (numero_risorse, numero_attivita) {
             name: 'lotto_risorsa_' + i,
             type: 'input',
             message: 'Lotto materia prima numero_' + i + ": ",
-            validate: function (value) 
-            {let reg = /^\d+$/;
-                let numero = parseInt(value);
-                // errore se l'input non è un numero, è < 0 o maggiore del limite massimo degli uint in solidity
-                if (reg.test(value) && !isNaN(numero) && numero > 0 && numero < Math.pow(2, 256) - 1) {
-                    return true;
-                } else {
-                    return 'Inserire un numero intero > 0';
-                }
-            }
+            validate: validatore_lotto
         };
         input_prodotto = input_prodotto.concat(risorse);
     }
@@ -262,7 +218,7 @@ exports.form_prodotto = function (numero_risorse, numero_attivita) {
 ///// TRASFERIMENTO /////
 
 // form in cui inserire la risorsa da trasferire e l'account del ricevitore;
-exports.form_trasferimento = function (address,privilegi) {
+exports.form_trasferimento = function (address, privilegi) {
     const trasferisci = [
         {
             type: 'rawlist',
@@ -274,17 +230,7 @@ exports.form_trasferimento = function (address,privilegi) {
             type: 'input',
             name: "lotto_trasferito",
             message: "Inserire il lotto della materia prima da trasferire: ",
-            validate: function (value){
-                let reg = /^\d+$/;
-                let numero = parseInt(value);
-                // errore se l'input non è un numero, è < 0 o maggiore del limite massimo degli uint in solidity
-                if (reg.test(value) && !isNaN(numero) && numero > 0 && numero < Math.pow(2, 256) - 1) {
-                    return true;
-                } else {
-                    return 'inserire un intero > 0';
-                }
-            }
-        }
+            validate: validatore_lotto}
     ];
     return inquirer.prompt(trasferisci);
 };
@@ -302,16 +248,7 @@ exports.form_by_token = function () {
         name: 'token',
         type: 'input',
         message: 'inserire token del prodotto/materia prima: ',
-        validate: function (value) 
-        {let reg = /^\d+$/;
-            let numero = parseInt(value);
-            // errore se l'input non è un numero, è < 0 o maggiore del limite massimo degli uint in solidity
-            if (reg.test(value) && !isNaN(numero) && numero > 0 && numero < Math.pow(2, 256) - 1) {
-                return true;
-            } else {
-                return 'inserire un intero > 0';
-            }
-        }
+        validate: validatore_lotto
     };
     return inquirer.prompt(by_token);
 };
@@ -331,16 +268,7 @@ exports.form_by_lotto = function () {
         name: 'lotto',
         type: 'input',
         message: 'inserire lotto del prodotto/materia prima: ',
-        validate: function (value) 
-        {let reg = /^\d+$/;
-            let numero = parseInt(value);
-            // errore se l'input non è un numero, è < 0 o maggiore del limite massimo degli uint in solidity
-            if (reg.test(value) && !isNaN(numero) && numero > 0 && numero < Math.pow(2, 256) - 1) {
-                return true;
-            } else {
-                return 'inserire un intero > 0';
-            }
-        }
+        validate: validatore_lotto
 
     };
     return inquirer.prompt(by_lotto);
@@ -360,18 +288,7 @@ exports.form_by_nome = function () {
         name: 'nome',
         type: 'input',
         message: 'Nome materia prima/prodotto: ',
-        validate: function (value) {
-            let reg = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
-                if (reg.test(value))
-                {
-                    return 'sono ammesse lettere dalla A alla Z e numeri da 0 a 9';
-                }
-            if (value.length > 0 && value.length < 32) {
-                return true;
-            } else {
-                return 'inserire un nome con meno di 32 caratteri';
-            }
-        }
+        validate: validatore_nome
     };
     return inquirer.prompt(by_nome);
 };
@@ -396,7 +313,7 @@ exports.form_operazione = function () {
         choices: [new inquirer.Separator("-----Transazioni-----"), "Inserimento attore", "Inserimento materia prima",
             "Inserimento prodotto", "Trasferimento risorsa", new inquirer.Separator("-----Estrazione dati-----"),
             "Possessore a partire dal token", "Informazioni a partire dal token", "Informazioni a partire dal lotto",
-            "Informazioni a partire dal nome",new inquirer.Separator("-----Altro-----"),"Logout","Esci dal programma"],
+            "Informazioni a partire dal nome", new inquirer.Separator("-----Altro-----"), "Logout", "Esci dal programma"],
         default: "Inserimento attore"
     };
     return inquirer.prompt(lista_operazioni);
@@ -437,7 +354,7 @@ exports.form_continua = function () {
         type: 'input',
         message: "Vuoi continuare a svolgere operazioni? (Y/N): ",
         validate: function (value) {
-            if (value=== "Y" || value=== "y" || value=== "N" || value=== "n") {
+            if (value === "Y" || value === "y" || value === "N" || value === "n") {
                 return true;
             } else {
                 return 'Valori ammessi: Y/N';
@@ -447,3 +364,7 @@ exports.form_continua = function () {
     return inquirer.prompt(continua);
 };
 
+
+exports.validatore_CO2 = validatore_CO2;
+exports.validatore_lotto = validatore_lotto;
+exports.validatore_nome = validatore_nome;

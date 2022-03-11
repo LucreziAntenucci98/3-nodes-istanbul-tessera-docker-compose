@@ -2,7 +2,8 @@
     "name": "greenchain",
     "description": "Catalogo di risorse basato su blockchain ",
     "scripts": {
-        "test": "mocha --timeout 10000 test/transazioni.js"
+        "test": "mocha --timeout 10000 test/form.js test/transazioni.js",
+        "start": "node Implementazione/interfaccia.js"
     },
     "dependencies": {
         "@openzeppelin/contracts": "^4.5.0",
