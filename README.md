@@ -1,4 +1,4 @@
-# Green-chain 
+# Green-chain (è DA MODIFICARE L'IMMAGINE NELL'IDENTIFICAZIONE DEGLI ATTACCHI. CI STANNO LE MISURE DI CONTROLLO CHE NON C'ENTRANO NIENTE; aggiustare anche la tabella delle misure di controllo che non si vede bene)
 
 Green-chain è un'applicazione che consente di inserire prodotti e materie prime all'interno di un catalogo implementato utilizzando una blockchain costituita da 3 nodi, in modo da garantire una completa tracciabilità dei dati. <br />
 La versione scaricabile è eseguibile solamente in Windows
