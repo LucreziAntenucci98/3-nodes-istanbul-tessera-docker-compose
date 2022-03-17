@@ -1,5 +1,4 @@
-# Green-chain (è DA MODIFICARE L'IMMAGINE NELL'IDENTIFICAZIONE DEGLI ATTACCHI. CI STANNO LE MISURE DI CONTROLLO CHE NON C'ENTRANO NIENTE; aggiustare anche la tabella delle misure di controllo che non si vede bene)
-
+# Green-chain 
 Green-chain è un'applicazione che consente di inserire prodotti e materie prime all'interno di un catalogo implementato utilizzando una blockchain costituita da 3 nodi, in modo da garantire una completa tracciabilità dei dati. <br />
 La versione scaricabile è eseguibile solamente in Windows
 
@@ -41,7 +40,7 @@ start.cmd
 truffle deploy
 ```
 
-Attendere finché l'operazione non va a buon fine (in caso di errore ripetere tale procedura).
+Attendere finché l'operazione non va a buon fine (in caso di errore ripetere il deploy).
 
 Fatto ciò, per poter avviare il programma basta lanciare il comando:
 
@@ -79,7 +78,7 @@ Dopo aver selezionato l'account con cui procedere, è possibile scegliere una tr
  In caso di errore o di corretta esecuzione dell'operazione, il programma fornirà il seguente input:
  
  ```bash
-? Vuoi continuare a svolgere operazioni? (Y/N):
+Vuoi continuare a svolgere operazioni? (Y/N):
 ```
 Se si vuole continuare con l'account corrente allora inserire "Y" o "y", altrimenti digitare "N" o "n" ed il programma terminerà (sarà necessario rieseguirlo con il comando sopra definito "node interfaccia.js")
 
