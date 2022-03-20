@@ -40,7 +40,7 @@ contract CarbonFootprint is ERC721 {
     function creaProdotto(uint256 _lotto, uint32 _valore_CO2, string[] memory _nomi_attivita, 
         uint32[] memory _valori_CO2_attivita, string memory _tipologia, 
         address _possessore, uint256[] memory _lotti_materie_prime, string memory _nome
-        ) public returns(uint256) {
+        ) public {
 
         // il token della risorsa è uguale al token corrente + 1
         _tokenIds.increment();
@@ -65,7 +65,6 @@ contract CarbonFootprint is ERC721 {
         // assegno la risorsa al possessore
         _safeMint(_possessore, id_nuovo_prodotto);
 
-        return id_nuovo_prodotto;
     }
 
     // funzione che riceve un lotto e contrassegna la relativa risorsa come "utilizzata"
